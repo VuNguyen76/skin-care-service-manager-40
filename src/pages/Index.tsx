@@ -35,7 +35,7 @@ const Index = () => {
               <div className="hidden md:block">
                 <div className="aspect-[4/5] bg-white rounded-lg overflow-hidden shadow-lg">
                   <img 
-                    src="/placeholder.svg" 
+                    src="https://images.unsplash.com/photo-1560099825-acb094a2195d?q=80&w=1000&auto=format&fit=crop"
                     alt="BeautySkin chăm sóc da"
                     className="w-full h-full object-cover"
                   />
@@ -61,7 +61,7 @@ const Index = () => {
             <div className="group">
               <div className="aspect-square bg-gray-50 mb-4 overflow-hidden shadow-sm rounded-lg">
                 <img 
-                  src="/placeholder.svg" 
+                  src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=1000&auto=format&fit=crop"
                   alt="Chăm sóc da cơ bản"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -77,7 +77,7 @@ const Index = () => {
             <div className="group">
               <div className="aspect-square bg-gray-50 mb-4 overflow-hidden shadow-sm rounded-lg">
                 <img 
-                  src="/placeholder.svg" 
+                  src="https://images.unsplash.com/photo-1571875257727-256c39da42af?q=80&w=1000&auto=format&fit=crop"
                   alt="Điều trị chống lão hóa"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -93,7 +93,7 @@ const Index = () => {
             <div className="group">
               <div className="aspect-square bg-gray-50 mb-4 overflow-hidden shadow-sm rounded-lg">
                 <img 
-                  src="/placeholder.svg" 
+                  src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?q=80&w=1000&auto=format&fit=crop"
                   alt="Tẩy tế bào chết hóa học"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -121,7 +121,7 @@ const Index = () => {
             <div>
               <div className="aspect-video bg-white rounded-lg overflow-hidden shadow-lg">
                 <img 
-                  src="/placeholder.svg" 
+                  src="https://images.unsplash.com/photo-1573461160327-b450ce3d8e7f?q=80&w=1000&auto=format&fit=crop"
                   alt="Tư vấn chăm sóc da"
                   className="w-full h-full object-cover"
                 />

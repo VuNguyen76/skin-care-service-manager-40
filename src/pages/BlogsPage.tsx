@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 const BlogsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   
-  const { data: blogs, isLoading } = useQuery({
+  const { data: blogs, isLoading, error } = useQuery({
     queryKey: ["blogs", "published"],
     queryFn: () => blogApi.getAll({ published: true }),
   });
@@ -22,6 +22,17 @@ const BlogsPage = () => {
     blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     blog.content.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (error) {
+    return (
+      <MainLayout>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+          <h2 className="text-2xl font-medium mb-4">Đã xảy ra lỗi khi tải bài viết</h2>
+          <p className="text-gray-600 mb-8">Vui lòng thử lại sau</p>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -69,7 +80,11 @@ const BlogsPage = () => {
                   </div>
                 ) : (
                   <div className="aspect-[4/3] bg-gray-100 mb-5 flex items-center justify-center text-gray-400 rounded-lg shadow-sm">
-                    Không có hình ảnh
+                    <img 
+                      src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=1000&auto=format&fit=crop" 
+                      alt="Ảnh đại diện"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 )}
                 
