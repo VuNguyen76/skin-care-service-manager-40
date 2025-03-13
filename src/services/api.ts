@@ -64,6 +64,22 @@ const serviceApi = {
   getBySpecialist: async (specialistId: number) => {
     const response = await api.get(`/services/specialist/${specialistId}`);
     return response.data;
+  },
+  
+  // Admin functions
+  createService: async (serviceData: any) => {
+    const response = await api.post('/services', serviceData);
+    return response.data;
+  },
+  
+  updateService: async (id: number, serviceData: any) => {
+    const response = await api.put(`/services/${id}`, serviceData);
+    return response.data;
+  },
+  
+  deleteService: async (id: number) => {
+    const response = await api.delete(`/services/${id}`);
+    return response.data;
   }
 };
 
@@ -102,6 +118,27 @@ const specialistApi = {
   getAvailableTimeSlots: async (specialistId: number, date: string) => {
     const response = await api.get(`/specialists/${specialistId}/available-slots?date=${date}`);
     return response.data;
+  },
+  
+  // Admin functions
+  createSpecialist: async (specialistData: any) => {
+    const response = await api.post('/specialists', specialistData);
+    return response.data;
+  },
+  
+  updateSpecialist: async (id: number, specialistData: any) => {
+    const response = await api.put(`/specialists/${id}`, specialistData);
+    return response.data;
+  },
+  
+  deleteSpecialist: async (id: number) => {
+    const response = await api.delete(`/specialists/${id}`);
+    return response.data;
+  },
+  
+  getTopRated: async (minReviews: number = 5) => {
+    const response = await api.get(`/specialists/top-rated?minReviews=${minReviews}`);
+    return response.data;
   }
 };
 
@@ -114,6 +151,22 @@ const quizApi = {
   
   submitAnswers: async (answers: any[]) => {
     const response = await api.post('/quiz/submit', answers);
+    return response.data;
+  },
+  
+  // Admin functions
+  createQuestion: async (questionData: any) => {
+    const response = await api.post('/quiz/questions', questionData);
+    return response.data;
+  },
+  
+  updateQuestion: async (id: number, questionData: any) => {
+    const response = await api.put(`/quiz/questions/${id}`, questionData);
+    return response.data;
+  },
+  
+  deleteQuestion: async (id: number) => {
+    const response = await api.delete(`/quiz/questions/${id}`);
     return response.data;
   }
 };
@@ -143,6 +196,27 @@ const bookingApi = {
   getBookingDetails: async (id: number) => {
     const response = await api.get(`/bookings/${id}`);
     return response.data;
+  },
+  
+  // Admin functions
+  getAllBookings: async (params?: { status?: string, startDate?: string, endDate?: string }) => {
+    let url = '/bookings/admin';
+    const queryParams = new URLSearchParams();
+    
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.startDate) queryParams.append('startDate', params.startDate);
+    if (params?.endDate) queryParams.append('endDate', params.endDate);
+    
+    const queryString = queryParams.toString();
+    if (queryString) url += `?${queryString}`;
+    
+    const response = await api.get(url);
+    return response.data;
+  },
+  
+  updateBookingStatus: async (id: number, status: string) => {
+    const response = await api.put(`/bookings/${id}/status`, { status });
+    return response.data;
   }
 };
 
@@ -161,6 +235,32 @@ const reviewApi = {
   getMyReviews: async () => {
     const response = await api.get('/reviews/my-reviews');
     return response.data;
+  },
+  
+  // Admin functions
+  getAllReviews: async (params?: { approved?: boolean, minRating?: number, maxRating?: number }) => {
+    let url = '/reviews/admin';
+    const queryParams = new URLSearchParams();
+    
+    if (params?.approved !== undefined) queryParams.append('approved', params.approved.toString());
+    if (params?.minRating) queryParams.append('minRating', params.minRating.toString());
+    if (params?.maxRating) queryParams.append('maxRating', params.maxRating.toString());
+    
+    const queryString = queryParams.toString();
+    if (queryString) url += `?${queryString}`;
+    
+    const response = await api.get(url);
+    return response.data;
+  },
+  
+  approveReview: async (id: number) => {
+    const response = await api.put(`/reviews/${id}/approve`);
+    return response.data;
+  },
+  
+  rejectReview: async (id: number) => {
+    const response = await api.put(`/reviews/${id}/reject`);
+    return response.data;
   }
 };
 
@@ -174,6 +274,170 @@ const categoryApi = {
   getById: async (id: number) => {
     const response = await api.get(`/categories/${id}`);
     return response.data;
+  },
+  
+  // Admin functions
+  createCategory: async (categoryData: any) => {
+    const response = await api.post('/categories', categoryData);
+    return response.data;
+  },
+  
+  updateCategory: async (id: number, categoryData: any) => {
+    const response = await api.put(`/categories/${id}`, categoryData);
+    return response.data;
+  },
+  
+  deleteCategory: async (id: number) => {
+    const response = await api.delete(`/categories/${id}`);
+    return response.data;
+  }
+};
+
+// Blog APIs
+const blogApi = {
+  getAll: async (params?: { published?: boolean, tag?: string }) => {
+    let url = '/blogs';
+    const queryParams = new URLSearchParams();
+    
+    if (params?.published !== undefined) queryParams.append('published', params.published.toString());
+    if (params?.tag) queryParams.append('tag', params.tag);
+    
+    const queryString = queryParams.toString();
+    if (queryString) url += `?${queryString}`;
+    
+    const response = await api.get(url);
+    return response.data;
+  },
+  
+  getById: async (id: number) => {
+    const response = await api.get(`/blogs/${id}`);
+    return response.data;
+  },
+  
+  getByTag: async (tagId: number) => {
+    const response = await api.get(`/blogs/tag/${tagId}`);
+    return response.data;
+  },
+  
+  // Admin functions
+  createBlog: async (blogData: any) => {
+    const response = await api.post('/blogs', blogData);
+    return response.data;
+  },
+  
+  updateBlog: async (id: number, blogData: any) => {
+    const response = await api.put(`/blogs/${id}`, blogData);
+    return response.data;
+  },
+  
+  deleteBlog: async (id: number) => {
+    const response = await api.delete(`/blogs/${id}`);
+    return response.data;
+  },
+  
+  publishBlog: async (id: number) => {
+    const response = await api.put(`/blogs/${id}/publish`);
+    return response.data;
+  },
+  
+  unpublishBlog: async (id: number) => {
+    const response = await api.put(`/blogs/${id}/unpublish`);
+    return response.data;
+  }
+};
+
+// User management APIs (admin only)
+const userApi = {
+  getAll: async (params?: { role?: string, active?: boolean }) => {
+    let url = '/users/admin';
+    const queryParams = new URLSearchParams();
+    
+    if (params?.role) queryParams.append('role', params.role);
+    if (params?.active !== undefined) queryParams.append('active', params.active.toString());
+    
+    const queryString = queryParams.toString();
+    if (queryString) url += `?${queryString}`;
+    
+    const response = await api.get(url);
+    return response.data;
+  },
+  
+  getById: async (id: number) => {
+    const response = await api.get(`/users/admin/${id}`);
+    return response.data;
+  },
+  
+  createUser: async (userData: any) => {
+    const response = await api.post('/users/admin', userData);
+    return response.data;
+  },
+  
+  updateUser: async (id: number, userData: any) => {
+    const response = await api.put(`/users/admin/${id}`, userData);
+    return response.data;
+  },
+  
+  activateUser: async (id: number) => {
+    const response = await api.put(`/users/admin/${id}/activate`);
+    return response.data;
+  },
+  
+  deactivateUser: async (id: number) => {
+    const response = await api.put(`/users/admin/${id}/deactivate`);
+    return response.data;
+  },
+  
+  assignRole: async (id: number, role: string) => {
+    const response = await api.put(`/users/admin/${id}/role`, { role });
+    return response.data;
+  }
+};
+
+// Stats and reports APIs (admin only)
+const statsApi = {
+  getDashboardStats: async () => {
+    const response = await api.get('/stats/dashboard');
+    return response.data;
+  },
+  
+  getBookingStats: async (params?: { period?: string, startDate?: string, endDate?: string }) => {
+    let url = '/stats/bookings';
+    const queryParams = new URLSearchParams();
+    
+    if (params?.period) queryParams.append('period', params.period);
+    if (params?.startDate) queryParams.append('startDate', params.startDate);
+    if (params?.endDate) queryParams.append('endDate', params.endDate);
+    
+    const queryString = queryParams.toString();
+    if (queryString) url += `?${queryString}`;
+    
+    const response = await api.get(url);
+    return response.data;
+  },
+  
+  getRevenueStats: async (params?: { period?: string, startDate?: string, endDate?: string }) => {
+    let url = '/stats/revenue';
+    const queryParams = new URLSearchParams();
+    
+    if (params?.period) queryParams.append('period', params.period);
+    if (params?.startDate) queryParams.append('startDate', params.startDate);
+    if (params?.endDate) queryParams.append('endDate', params.endDate);
+    
+    const queryString = queryParams.toString();
+    if (queryString) url += `?${queryString}`;
+    
+    const response = await api.get(url);
+    return response.data;
+  },
+  
+  getServicePopularity: async () => {
+    const response = await api.get('/stats/services/popularity');
+    return response.data;
+  },
+  
+  getSpecialistPerformance: async () => {
+    const response = await api.get('/stats/specialists/performance');
+    return response.data;
   }
 };
 
@@ -184,5 +448,8 @@ export {
   quizApi,
   bookingApi,
   reviewApi,
-  categoryApi
+  categoryApi,
+  blogApi,
+  userApi,
+  statsApi
 };

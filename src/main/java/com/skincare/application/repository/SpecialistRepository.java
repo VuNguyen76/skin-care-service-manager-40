@@ -25,4 +25,24 @@ public interface SpecialistRepository extends JpaRepository<Specialist, Long> {
     List<Specialist> findByNameContaining(String name);
     
     Optional<Specialist> findByUser(User user);
+    
+    // Add new queries for admin features
+    
+    @Query("SELECT COUNT(s) FROM Specialist s")
+    Long countSpecialists();
+    
+    @Query("SELECT s FROM Specialist s ORDER BY s.ratingAverage DESC")
+    List<Specialist> findAllOrderByRatingDesc();
+    
+    @Query("SELECT s FROM Specialist s WHERE s.ratingCount > :minReviews ORDER BY s.ratingAverage DESC")
+    List<Specialist> findTopRatedSpecialists(Integer minReviews);
+    
+    @Query("SELECT s FROM Specialist s JOIN s.user u WHERE u.isActive = true")
+    List<Specialist> findAllActiveSpecialists();
+    
+    @Query(value = "SELECT s.* FROM specialists s " +
+           "JOIN specialist_schedules ss ON s.id = ss.specialist_id " +
+           "WHERE ss.schedule_date BETWEEN :startDate AND :endDate " +
+           "GROUP BY s.id", nativeQuery = true)
+    List<Specialist> findAllAvailableBetweenDates(String startDate, String endDate);
 }
