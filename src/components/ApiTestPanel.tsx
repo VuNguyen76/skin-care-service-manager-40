@@ -13,7 +13,9 @@ import {
   reviewApi, 
   categoryApi, 
   userApi, 
-  statsApi 
+  statsApi,
+  profileApi,
+  settingsApi
 } from "@/services/api";
 
 const ApiTestPanel = () => {
@@ -30,27 +32,47 @@ const ApiTestPanel = () => {
     review: reviewApi,
     category: categoryApi,
     user: userApi,
-    stats: statsApi
+    stats: statsApi,
+    profile: profileApi,
+    settings: settingsApi
   };
   
   const methodOptions: Record<string, any> = {
     blog: [
-      { label: "Get All Blogs", method: "getAll", params: { published: true } },
-      { label: "Get Blog By ID", method: "getById", params: 1 }
+      { label: "Tất cả bài viết", method: "getAll", params: { published: true } },
+      { label: "Bài viết theo ID", method: "getById", params: 1 }
     ],
     service: [
-      { label: "Get All Services", method: "getAll" },
-      { label: "Get Service By ID", method: "getById", params: 1 }
+      { label: "Tất cả dịch vụ", method: "getAll" },
+      { label: "Dịch vụ theo ID", method: "getById", params: 1 },
+      { label: "Dịch vụ theo danh mục", method: "getByCategory", params: 1 }
     ],
     specialist: [
-      { label: "Get All Specialists", method: "getAll" },
-      { label: "Get Top Rated Specialists", method: "getTopRated" }
+      { label: "Tất cả chuyên gia", method: "getAll" },
+      { label: "Chuyên gia theo ID", method: "getById", params: 1 },
+      { label: "Chuyên gia theo dịch vụ", method: "getByService", params: 1 },
+      { label: "Chuyên gia đánh giá cao", method: "getTopRated" }
     ],
     booking: [
-      { label: "Get My Bookings", method: "getMyBookings" }
+      { label: "Lịch đặt của tôi", method: "getMyBookings" },
+      { label: "Chi tiết lịch đặt", method: "getBookingDetails", params: 1 }
+    ],
+    review: [
+      { label: "Đánh giá theo chuyên gia", method: "getBySpecialist", params: 1 },
+      { label: "Đánh giá của tôi", method: "getMyReviews" }
     ],
     category: [
-      { label: "Get All Categories", method: "getAll" }
+      { label: "Tất cả danh mục", method: "getAll" },
+      { label: "Danh mục theo ID", method: "getById", params: 1 }
+    ],
+    profile: [
+      { label: "Thông tin cá nhân", method: "getUserProfile" }
+    ],
+    settings: [
+      { label: "Cài đặt chung", method: "getGeneralSettings" },
+      { label: "Cài đặt liên hệ", method: "getContactSettings" },
+      { label: "Cài đặt mạng xã hội", method: "getSocialSettings" },
+      { label: "Cài đặt đặt lịch", method: "getBookingSettings" }
     ]
   };
   
@@ -81,7 +103,7 @@ const ApiTestPanel = () => {
       const methodConfig = methodOptions[selectedApi].find((m: any) => m.method === selectedMethod);
       
       if (!api || !methodConfig) {
-        throw new Error("Invalid API or method selection");
+        throw new Error("Lựa chọn API hoặc phương thức không hợp lệ");
       }
       
       let result;
@@ -93,7 +115,7 @@ const ApiTestPanel = () => {
       
       setResponseData(result);
     } catch (err: any) {
-      setError(err.message || "An error occurred during the API call");
+      setError(err.message || "Đã xảy ra lỗi khi gọi API");
     } finally {
       setIsLoading(false);
     }
@@ -102,32 +124,35 @@ const ApiTestPanel = () => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>API Test Panel</CardTitle>
-        <CardDescription>Test API functionality and connections</CardDescription>
+        <CardTitle>Kiểm thử API</CardTitle>
+        <CardDescription>Kiểm tra chức năng và kết nối API</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Select API</label>
+            <label className="block text-sm font-medium mb-2">Chọn API</label>
             <Select value={selectedApi} onValueChange={handleApiChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Select an API" />
+                <SelectValue placeholder="Chọn API" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="blog">Blog API</SelectItem>
-                <SelectItem value="service">Service API</SelectItem>
-                <SelectItem value="specialist">Specialist API</SelectItem>
-                <SelectItem value="booking">Booking API</SelectItem>
-                <SelectItem value="category">Category API</SelectItem>
+                <SelectItem value="blog">API Bài viết</SelectItem>
+                <SelectItem value="service">API Dịch vụ</SelectItem>
+                <SelectItem value="specialist">API Chuyên gia</SelectItem>
+                <SelectItem value="booking">API Đặt lịch</SelectItem>
+                <SelectItem value="category">API Danh mục</SelectItem>
+                <SelectItem value="review">API Đánh giá</SelectItem>
+                <SelectItem value="profile">API Hồ sơ</SelectItem>
+                <SelectItem value="settings">API Cài đặt</SelectItem>
               </SelectContent>
             </Select>
           </div>
           
           <div>
-            <label className="block text-sm font-medium mb-2">Select Method</label>
+            <label className="block text-sm font-medium mb-2">Chọn phương thức</label>
             <Select value={selectedMethod} onValueChange={handleMethodChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Select a method" />
+                <SelectValue placeholder="Chọn phương thức" />
               </SelectTrigger>
               <SelectContent>
                 {methodOptions[selectedApi]?.map((option: any) => (
@@ -145,19 +170,19 @@ const ApiTestPanel = () => {
           disabled={isLoading || !selectedApi || !selectedMethod}
           className="w-full"
         >
-          {isLoading ? "Loading..." : "Execute API Call"}
+          {isLoading ? "Đang tải..." : "Thực hiện gọi API"}
         </Button>
         
         {error && (
           <Alert variant="destructive">
-            <AlertTitle>Error</AlertTitle>
+            <AlertTitle>Lỗi</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
         
         {responseData && (
           <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2">Response:</h3>
+            <h3 className="text-lg font-semibold mb-2">Kết quả:</h3>
             <div className="p-4 bg-gray-50 rounded-md overflow-auto max-h-60">
               <pre className="text-xs">{JSON.stringify(responseData, null, 2)}</pre>
             </div>
