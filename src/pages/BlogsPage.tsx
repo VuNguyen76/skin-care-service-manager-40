@@ -3,10 +3,8 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { blogApi } from "@/services/api";
 import { Spinner } from "@/components/ui/spinner";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar, Search, Tag } from "lucide-react";
+import { Search, Calendar, ChevronRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import MainLayout from "@/components/layout/MainLayout";
 import { Link } from "react-router-dom";
@@ -26,22 +24,30 @@ const BlogsPage = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto py-8 px-4">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">Blog Articles</h1>
-          <p className="text-muted-foreground">
-            Explore our latest articles about skincare tips, treatments, and wellness advice
-          </p>
+      {/* Hero Section */}
+      <div className="bg-gray-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-light mb-6">Skincare Journal</h1>
+            <p className="text-lg text-gray-600">
+              Expert advice and insights for your skincare journey
+            </p>
+          </div>
         </div>
-
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search articles..."
-            className="pl-10"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Search Bar */}
+        <div className="max-w-xl mx-auto mb-12">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search articles..."
+              className="pl-10 border-gray-300 focus:border-black focus:ring-black rounded-none"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
         {isLoading ? (
@@ -49,46 +55,51 @@ const BlogsPage = () => {
             <Spinner size="lg" />
           </div>
         ) : filteredBlogs?.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {filteredBlogs.map(blog => (
-              <Card key={blog.id} className="overflow-hidden flex flex-col">
-                {blog.featuredImage && (
-                  <div className="aspect-video w-full overflow-hidden">
+              <div key={blog.id} className="group">
+                {blog.featuredImage ? (
+                  <div className="aspect-[4/3] overflow-hidden mb-4">
                     <img 
                       src={blog.featuredImage} 
                       alt={blog.title}
-                      className="w-full h-full object-cover transition-transform hover:scale-105"
+                      className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"
                     />
                   </div>
-                )}
-                <CardHeader>
-                  <CardTitle className="line-clamp-2">{blog.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <p className="text-muted-foreground line-clamp-3 mb-4">
-                    {blog.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
-                  </p>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    <span>
-                      {blog.publishedAt 
-                        ? formatDistanceToNow(new Date(blog.publishedAt), { addSuffix: true }) 
-                        : formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
-                    </span>
+                ) : (
+                  <div className="aspect-[4/3] bg-gray-100 mb-4 flex items-center justify-center text-gray-400">
+                    No Image
                   </div>
-                </CardContent>
-                <CardFooter className="pt-0">
-                  <Link to={`/blogs/${blog.id}`}>
-                    <Button>Read More</Button>
-                  </Link>
-                </CardFooter>
-              </Card>
+                )}
+                
+                <div className="mb-2 flex items-center text-sm text-gray-500">
+                  <Calendar className="h-4 w-4 mr-1" />
+                  <span>
+                    {blog.publishedAt 
+                      ? formatDistanceToNow(new Date(blog.publishedAt), { addSuffix: true }) 
+                      : formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
+                  </span>
+                </div>
+                
+                <h3 className="text-xl font-medium mb-2 line-clamp-2 group-hover:text-gray-700">{blog.title}</h3>
+                
+                <p className="text-gray-600 line-clamp-3 mb-4">
+                  {blog.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                </p>
+                
+                <Link 
+                  to={`/blogs/${blog.id}`} 
+                  className="text-black font-medium inline-flex items-center border-b border-black pb-1 hover:opacity-70"
+                >
+                  Read More <ChevronRight className="ml-1 h-4 w-4" />
+                </Link>
+              </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium">No articles found</h3>
-            <p className="text-muted-foreground">Try changing your search term</p>
+          <div className="text-center py-12 bg-gray-50 rounded-lg">
+            <h3 className="text-xl font-medium mb-2">No articles found</h3>
+            <p className="text-gray-600">Try changing your search term</p>
           </div>
         )}
       </div>

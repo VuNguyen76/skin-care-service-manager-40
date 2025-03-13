@@ -36,10 +36,10 @@ const AdminDashboard = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+      <h2 className="text-3xl font-light tracking-tight">Dashboard</h2>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="border border-gray-200 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -49,7 +49,7 @@ const AdminDashboard = () => {
             <p className="text-xs text-muted-foreground">Registered users in the system</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border border-gray-200 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Specialists</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
             <p className="text-xs text-muted-foreground">Active skincare specialists</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border border-gray-200 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Services</CardTitle>
             <Tag className="h-4 w-4 text-muted-foreground" />
@@ -69,7 +69,7 @@ const AdminDashboard = () => {
             <p className="text-xs text-muted-foreground">Available skincare services</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border border-gray-200 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />

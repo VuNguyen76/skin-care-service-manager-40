@@ -1,9 +1,9 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 
 // Mock data - this would come from an API
 const mockServices = [
@@ -71,8 +71,8 @@ const mockCategories = [
 ];
 
 const ServicesPage = () => {
-  const [services, setServices] = useState(mockServices);
-  const [categories, setCategories] = useState(mockCategories);
+  const [services] = useState(mockServices);
+  const [categories] = useState(mockCategories);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const filteredServices = selectedCategory
@@ -83,63 +83,99 @@ const ServicesPage = () => {
 
   return (
     <MainLayout>
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Our Services
-          </h1>
-          <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-            Discover our range of professional skincare treatments
-          </p>
+      {/* Hero Section */}
+      <div className="bg-gray-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-light mb-6">Our Services</h1>
+            <p className="text-lg text-gray-600 mb-8">
+              Discover our range of professional treatments designed to address your specific skin concerns
+              and help you achieve your skincare goals.
+            </p>
+          </div>
         </div>
+      </div>
 
-        {/* Category filters */}
-        <div className="mb-8 flex flex-wrap justify-center gap-2">
+      {/* Categories Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
           <Button
             variant={selectedCategory === null ? "default" : "outline"}
             onClick={() => setSelectedCategory(null)}
+            className={selectedCategory === null 
+              ? "bg-black hover:bg-gray-800 text-white rounded-none" 
+              : "text-gray-800 border-gray-300 hover:bg-gray-50 rounded-none"
+            }
           >
-            All
+            All Services
           </Button>
           {categories.map(category => (
             <Button
               key={category.id}
               variant={selectedCategory === category.id ? "default" : "outline"}
               onClick={() => setSelectedCategory(category.id)}
+              className={selectedCategory === category.id 
+                ? "bg-black hover:bg-gray-800 text-white rounded-none" 
+                : "text-gray-800 border-gray-300 hover:bg-gray-50 rounded-none"
+              }
             >
               {category.name}
             </Button>
           ))}
         </div>
 
-        {/* Services grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {/* Services Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredServices.map(service => (
-            <Card key={service.id} className="overflow-hidden">
-              <div className="h-48 bg-gray-200"></div>
-              <CardHeader>
-                <CardTitle>{service.name}</CardTitle>
-                <CardDescription>
-                  {service.durationMinutes} minutes | ${service.price.toFixed(2)}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">{service.description}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
+            <div key={service.id} className="group">
+              <div className="aspect-square bg-gray-100 mb-6 overflow-hidden">
+                <div className="w-full h-full flex items-center justify-center text-gray-400 group-hover:bg-gray-200 transition duration-300">
+                  Service Image
+                </div>
+              </div>
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-medium">{service.name}</h3>
+                <div className="text-right">
+                  <span className="font-medium text-lg">${service.price.toFixed(2)}</span>
+                  <p className="text-sm text-gray-500">{service.durationMinutes} min</p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4">{service.description}</p>
+              <div className="flex justify-between items-center">
+                <div className="flex flex-wrap gap-2">
                   {service.categories.map(category => (
-                    <span key={category.id} className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                    <span key={category.id} className="text-xs px-2 py-1 bg-gray-100 text-gray-600">
                       {category.name}
                     </span>
                   ))}
                 </div>
-              </CardContent>
-              <CardFooter>
-                <Link to={`/book-service/${service.id}`} className="w-full">
-                  <Button className="w-full">Book Now</Button>
+                <Link 
+                  to={`/book-service/${service.id}`} 
+                  className="text-black font-medium inline-flex items-center border-b border-black pb-1 hover:opacity-70"
+                >
+                  Book Now <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
-              </CardFooter>
-            </Card>
+              </div>
+            </div>
           ))}
+        </div>
+      </div>
+
+      {/* Consultation CTA */}
+      <div className="bg-gray-50 py-16">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-light mb-4">Not Sure Which Treatment Is Right For You?</h2>
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            Take our skin quiz to receive personalized treatment recommendations or book a consultation with our specialists.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button asChild className="bg-black hover:bg-gray-800 text-white rounded-none px-8">
+              <Link to="/quiz">Take Skin Quiz</Link>
+            </Button>
+            <Button asChild variant="outline" className="border-black text-black hover:bg-gray-100 rounded-none px-8">
+              <Link to="/specialists">Speak With a Specialist</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </MainLayout>
