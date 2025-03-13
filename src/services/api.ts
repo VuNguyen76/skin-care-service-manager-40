@@ -69,8 +69,18 @@ const serviceApi = {
 
 // Add specialist APIs
 const specialistApi = {
-  getAll: async () => {
-    const response = await api.get('/specialists');
+  getAll: async (params?: { minRating?: number, keyword?: string, name?: string }) => {
+    let url = '/specialists';
+    const queryParams = new URLSearchParams();
+    
+    if (params?.minRating) queryParams.append('minRating', params.minRating.toString());
+    if (params?.keyword) queryParams.append('keyword', params.keyword);
+    if (params?.name) queryParams.append('name', params.name);
+    
+    const queryString = queryParams.toString();
+    if (queryString) url += `?${queryString}`;
+    
+    const response = await api.get(url);
     return response.data;
   },
   
@@ -86,6 +96,11 @@ const specialistApi = {
   
   getSchedule: async (specialistId: number) => {
     const response = await api.get(`/specialists/${specialistId}/schedules`);
+    return response.data;
+  },
+  
+  getAvailableTimeSlots: async (specialistId: number, date: string) => {
+    const response = await api.get(`/specialists/${specialistId}/available-slots?date=${date}`);
     return response.data;
   }
 };
@@ -118,6 +133,16 @@ const bookingApi = {
   cancelBooking: async (id: number) => {
     const response = await api.put(`/bookings/${id}/cancel`);
     return response.data;
+  },
+  
+  rescheduleBooking: async (id: number, newDateTime: string) => {
+    const response = await api.put(`/bookings/${id}/reschedule`, { newDateTime });
+    return response.data;
+  },
+  
+  getBookingDetails: async (id: number) => {
+    const response = await api.get(`/bookings/${id}`);
+    return response.data;
   }
 };
 
@@ -130,6 +155,11 @@ const reviewApi = {
   
   submitReview: async (bookingId: number, reviewData: any) => {
     const response = await api.post(`/reviews/booking/${bookingId}`, reviewData);
+    return response.data;
+  },
+  
+  getMyReviews: async () => {
+    const response = await api.get('/reviews/my-reviews');
     return response.data;
   }
 };

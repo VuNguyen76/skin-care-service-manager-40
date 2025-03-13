@@ -18,5 +18,11 @@ public interface SpecialistRepository extends JpaRepository<Specialist, Long> {
     @Query("SELECT s FROM Specialist s WHERE s.ratingAverage >= :minRating")
     List<Specialist> findAllWithMinimumRating(Double minRating);
     
+    @Query("SELECT s FROM Specialist s WHERE s.specialization LIKE %:keyword%")
+    List<Specialist> findBySpecializationContaining(String keyword);
+    
+    @Query("SELECT s FROM Specialist s WHERE s.user.fullName LIKE %:name%")
+    List<Specialist> findByNameContaining(String name);
+    
     Optional<Specialist> findByUser(User user);
 }
