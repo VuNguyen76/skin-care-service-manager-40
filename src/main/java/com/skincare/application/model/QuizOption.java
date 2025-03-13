@@ -35,6 +35,7 @@ public class QuizOption {
         joinColumns = @JoinColumn(name = "option_id"),
         inverseJoinColumns = @JoinColumn(name = "service_id")
     )
+    @Builder.Default
     private Set<Service> recommendedServices = new HashSet<>();
 
     @CreationTimestamp

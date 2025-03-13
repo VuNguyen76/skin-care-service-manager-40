@@ -60,6 +60,7 @@ public class Booking {
     private String notes;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @Builder.Default
     private Set<BookingDetail> bookingDetails = new HashSet<>();
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)

@@ -36,15 +36,18 @@ public class Service {
     private Integer durationMinutes;
 
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 
     @Column(name = "image_url")
     private String imageUrl;
 
     @ManyToMany(mappedBy = "services")
+    @Builder.Default
     private Set<Specialist> specialists = new HashSet<>();
 
     @ManyToMany(mappedBy = "recommendedServices")
+    @Builder.Default
     private Set<QuizQuestion> quizQuestions = new HashSet<>();
 
     @ManyToMany
@@ -53,9 +56,11 @@ public class Service {
         joinColumns = @JoinColumn(name = "service_id"),
         inverseJoinColumns = @JoinColumn(name = "category_id")
     )
+    @Builder.Default
     private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "service")
+    @Builder.Default
     private Set<BookingDetail> bookingDetails = new HashSet<>();
 
     @CreationTimestamp

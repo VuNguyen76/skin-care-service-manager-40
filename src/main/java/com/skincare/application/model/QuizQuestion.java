@@ -30,9 +30,11 @@ public class QuizQuestion {
     private QuestionType questionType;
 
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @Builder.Default
     private Set<QuizOption> options = new HashSet<>();
 
     @ManyToMany
@@ -41,6 +43,7 @@ public class QuizQuestion {
         joinColumns = @JoinColumn(name = "question_id"),
         inverseJoinColumns = @JoinColumn(name = "service_id")
     )
+    @Builder.Default
     private Set<Service> recommendedServices = new HashSet<>();
 
     @CreationTimestamp

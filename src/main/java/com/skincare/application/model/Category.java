@@ -28,6 +28,7 @@ public class Category {
     private String description;
 
     @ManyToMany(mappedBy = "categories")
+    @Builder.Default
     private Set<Service> services = new HashSet<>();
 
     @CreationTimestamp

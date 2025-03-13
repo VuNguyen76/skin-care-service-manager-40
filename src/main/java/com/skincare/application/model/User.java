@@ -45,6 +45,7 @@ public class User {
     private LocalDateTime dateOfBirth;
 
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -53,6 +54,7 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
     @CreationTimestamp

@@ -35,9 +35,11 @@ public class Specialist {
     private String certifications;
 
     @Column(name = "rating_average")
+    @Builder.Default
     private Double ratingAverage = 0.0;
 
     @Column(name = "rating_count")
+    @Builder.Default
     private Integer ratingCount = 0;
 
     @ManyToMany
@@ -46,12 +48,15 @@ public class Specialist {
         joinColumns = @JoinColumn(name = "specialist_id"),
         inverseJoinColumns = @JoinColumn(name = "service_id")
     )
+    @Builder.Default
     private Set<Service> services = new HashSet<>();
 
     @OneToMany(mappedBy = "specialist")
+    @Builder.Default
     private Set<Booking> bookings = new HashSet<>();
 
     @OneToMany(mappedBy = "specialist")
+    @Builder.Default
     private Set<SpecialistSchedule> schedules = new HashSet<>();
 
     @CreationTimestamp

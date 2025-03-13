@@ -32,9 +32,11 @@ public class Blog {
     private String featuredImage;
 
     @Column(name = "is_published")
+    @Builder.Default
     private Boolean isPublished = false;
 
     @Column(name = "view_count")
+    @Builder.Default
     private Integer viewCount = 0;
 
     @ManyToOne
@@ -47,6 +49,7 @@ public class Blog {
         joinColumns = @JoinColumn(name = "blog_id"),
         inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @Builder.Default
     private Set<Tag> tags = new HashSet<>();
 
     @CreationTimestamp

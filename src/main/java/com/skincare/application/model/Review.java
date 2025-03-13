@@ -31,6 +31,7 @@ public class Review {
     private String comment;
 
     @Column(name = "is_approved")
+    @Builder.Default
     private Boolean isApproved = false;
 
     @Column(name = "admin_response", columnDefinition = "TEXT")

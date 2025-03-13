@@ -39,9 +39,11 @@ public class Customer {
     private String medicalHistory;
 
     @OneToMany(mappedBy = "customer")
+    @Builder.Default
     private Set<Booking> bookings = new HashSet<>();
 
     @OneToMany(mappedBy = "customer")
+    @Builder.Default
     private Set<CustomerQuizResult> quizResults = new HashSet<>();
 
     @CreationTimestamp

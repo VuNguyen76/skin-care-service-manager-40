@@ -37,6 +37,7 @@ public class SpecialistSchedule {
     private LocalTime endTime;
 
     @Column(name = "is_available")
+    @Builder.Default
     private Boolean isAvailable = true;
 
     @CreationTimestamp

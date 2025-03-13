@@ -26,6 +26,7 @@ public class Tag {
     private String name;
 
     @ManyToMany(mappedBy = "tags")
+    @Builder.Default
     private Set<Blog> blogs = new HashSet<>();
 
     @CreationTimestamp
