@@ -49,7 +49,7 @@ const AdminLayout = () => {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-muted/20">
-        <Sidebar defaultCollapsed={collapsed} className="border-r">
+        <Sidebar collapsed={collapsed} className="border-r">
           <SidebarHeader>
             <div className="flex items-center justify-between px-4 py-2">
               <h2 className="text-lg font-semibold">Skincare Admin</h2>

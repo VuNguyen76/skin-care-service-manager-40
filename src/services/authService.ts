@@ -16,7 +16,15 @@ interface RegisterData {
   address?: string;
 }
 
-const setAuthData = (data: any) => {
+interface UserData {
+  id: number;
+  username: string;
+  email: string;
+  roles: string[];
+  token: string;
+}
+
+const setAuthData = (data: UserData) => {
   localStorage.setItem("token", data.token);
   localStorage.setItem("user", JSON.stringify({
     id: data.id,

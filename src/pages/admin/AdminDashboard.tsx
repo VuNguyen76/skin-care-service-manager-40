@@ -10,31 +10,14 @@ import { BarChart, LineChart } from "recharts";
 import ApiTestPanel from "@/components/ApiTestPanel";
 
 const AdminDashboard = () => {
-  const { data: dashboardStats, isLoading } = useQuery({
+  const { data: dashboardStats, isLoading, error } = useQuery({
     queryKey: ["stats", "dashboard"],
     queryFn: () => statsApi.getDashboardStats(),
-    // For testing purposes, let's handle the case where the API isn't implemented yet
-    onError: () => {
-      return {
-        totalUsers: 120,
-        totalSpecialists: 15,
-        totalBookings: 450,
-        totalServices: 35,
-        recentBookings: [],
-        popularServices: []
-      };
-    }
+    // For testing purposes, we'll use a fallback when API is not available
+    retry: false
   });
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  // Mock data for demonstration
+  // Fallback data when API isn't available
   const mockData = {
     totalUsers: 120,
     totalSpecialists: 15,
@@ -43,6 +26,14 @@ const AdminDashboard = () => {
     recentBookings: [],
     popularServices: []
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
   // Use real data if available, otherwise use mock data
   const stats = dashboardStats || mockData;

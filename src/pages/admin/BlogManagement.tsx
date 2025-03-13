@@ -13,9 +13,26 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
+interface BlogPost {
+  id: number;
+  title: string;
+  content: string;
+  featuredImage?: string;
+  tags?: string[];
+  isPublished: boolean;
+}
+
+interface BlogFormData {
+  id: number | null;
+  title: string;
+  content: string;
+  featuredImage: string;
+  tags: string[];
+}
+
 const BlogManagement = () => {
   const queryClient = useQueryClient();
-  const [blogFormData, setBlogFormData] = useState({
+  const [blogFormData, setBlogFormData] = useState<BlogFormData>({
     id: null,
     title: "",
     content: "",
@@ -33,7 +50,7 @@ const BlogManagement = () => {
 
   // Create blog mutation
   const createBlog = useMutation({
-    mutationFn: (blogData) => blogApi.createBlog(blogData),
+    mutationFn: (blogData: any) => blogApi.createBlog(blogData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       toast.success("Blog post created successfully");
@@ -44,7 +61,7 @@ const BlogManagement = () => {
 
   // Update blog mutation
   const updateBlog = useMutation({
-    mutationFn: (params) => blogApi.updateBlog(params.id, params.blogData),
+    mutationFn: (params: { id: number, blogData: any }) => blogApi.updateBlog(params.id, params.blogData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       toast.success("Blog post updated successfully");
@@ -55,7 +72,7 @@ const BlogManagement = () => {
 
   // Delete blog mutation
   const deleteBlog = useMutation({
-    mutationFn: (id) => blogApi.deleteBlog(id),
+    mutationFn: (id: number) => blogApi.deleteBlog(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       toast.success("Blog post deleted successfully");
@@ -64,7 +81,7 @@ const BlogManagement = () => {
 
   // Publish/Unpublish blog mutation
   const publishBlog = useMutation({
-    mutationFn: (id) => blogApi.publishBlog(id),
+    mutationFn: (id: number) => blogApi.publishBlog(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       toast.success("Blog post published successfully");
@@ -72,14 +89,14 @@ const BlogManagement = () => {
   });
 
   const unpublishBlog = useMutation({
-    mutationFn: (id) => blogApi.unpublishBlog(id),
+    mutationFn: (id: number) => blogApi.unpublishBlog(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       toast.success("Blog post unpublished successfully");
     }
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setBlogFormData({
       ...blogFormData,
@@ -87,7 +104,7 @@ const BlogManagement = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isEditing && blogFormData.id) {
       updateBlog.mutate({ id: blogFormData.id, blogData: blogFormData });
@@ -96,12 +113,12 @@ const BlogManagement = () => {
     }
   };
 
-  const handleEdit = (blog) => {
+  const handleEdit = (blog: BlogPost) => {
     setBlogFormData({
       id: blog.id,
       title: blog.title,
       content: blog.content,
-      featuredImage: blog.featuredImage,
+      featuredImage: blog.featuredImage || "",
       tags: blog.tags || []
     });
     setIsEditing(true);
@@ -191,7 +208,7 @@ const BlogManagement = () => {
 
         <TabsContent value="all" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {blogs?.map((blog) => (
+            {blogs?.map((blog: BlogPost) => (
               <Card key={blog.id}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium truncate">{blog.title}</CardTitle>
@@ -235,7 +252,7 @@ const BlogManagement = () => {
 
         <TabsContent value="published" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {blogs?.filter(blog => blog.isPublished).map((blog) => (
+            {blogs?.filter((blog: BlogPost) => blog.isPublished).map((blog: BlogPost) => (
               <Card key={blog.id}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium truncate">{blog.title}</CardTitle>
@@ -269,7 +286,7 @@ const BlogManagement = () => {
 
         <TabsContent value="drafts" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {blogs?.filter(blog => !blog.isPublished).map((blog) => (
+            {blogs?.filter((blog: BlogPost) => !blog.isPublished).map((blog: BlogPost) => (
               <Card key={blog.id}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium truncate">{blog.title}</CardTitle>
