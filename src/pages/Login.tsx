@@ -29,11 +29,37 @@ const Login = () => {
     try {
       await authService.login(formData);
       toast.success("Login successful!");
-      navigate("/");
+      
+      // Redirect based on user role
+      const user = authService.getCurrentUser();
+      if (user?.roles?.includes("ROLE_ADMIN")) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleTestLogin = (type: "admin" | "user") => {
+    const accounts = authService.getTestAccounts();
+    const account = accounts[type];
+    setFormData({
+      username: account.username,
+      password: account.password
+    });
+    
+    // For quick testing, simulate the login directly
+    authService.simulateLogin(type);
+    toast.success(`Logged in as test ${type}`);
+    
+    if (type === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/");
     }
   };
 
@@ -71,6 +97,20 @@ const Login = () => {
                   onChange={handleChange}
                   required
                 />
+              </div>
+              
+              <div className="pt-4 border-t">
+                <p className="text-center text-sm text-muted-foreground mb-3">
+                  For testing purposes, you can use:
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button type="button" variant="outline" size="sm" onClick={() => handleTestLogin("admin")}>
+                    Login as Admin
+                  </Button>
+                  <Button type="button" variant="outline" size="sm" onClick={() => handleTestLogin("user")}>
+                    Login as User
+                  </Button>
+                </div>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">

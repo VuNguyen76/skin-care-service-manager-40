@@ -44,7 +44,7 @@ const BlogManagement = () => {
 
   // Update blog mutation
   const updateBlog = useMutation({
-    mutationFn: ({ id, blogData }) => blogApi.updateBlog(id, blogData),
+    mutationFn: (params) => blogApi.updateBlog(params.id, params.blogData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       toast.success("Blog post updated successfully");
