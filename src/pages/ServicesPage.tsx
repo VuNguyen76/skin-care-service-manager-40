@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -173,7 +172,7 @@ const ServicesPage = () => {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-light mb-4">Bạn chưa biết nên chọn liệu trình nào?</h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Làm bài kiểm tra da để nhận gợi ý liệu trình phù hợp hoặc đặt lịch tư vấn trực tiếp với chuyên gia của chúng tôi.
+            Làm bài ki��m tra da để nhận gợi ý liệu trình phù hợp hoặc đặt lịch tư vấn trực tiếp với chuyên gia của chúng tôi.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button asChild className="bg-primary hover:bg-primary/80 text-white rounded-none px-8">

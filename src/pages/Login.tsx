@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import authService from "@/services/authService";
 import MainLayout from "@/components/layout/MainLayout";
 import { Eye, EyeOff, User, Lock } from "lucide-react";
+import TestLoginPanel from "@/components/TestLoginPanel";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -30,7 +31,7 @@ const Login = () => {
 
     try {
       await authService.login(formData);
-      toast.success("Login successful!");
+      toast.success("Đăng nhập thành công!");
       
       // Redirect based on user role
       const user = authService.getCurrentUser();
@@ -41,28 +42,9 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("Invalid username or password");
+      toast.error("Tên đăng nhập hoặc mật khẩu không đúng");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleTestLogin = (type: "admin" | "user") => {
-    const accounts = authService.getTestAccounts();
-    const account = accounts[type];
-    setFormData({
-      username: account.username,
-      password: account.password
-    });
-    
-    // For quick testing, simulate the login directly
-    authService.simulateLogin(type);
-    toast.success(`Logged in as test ${type}`);
-    
-    if (type === "admin") {
-      navigate("/admin");
-    } else {
-      navigate("/");
     }
   };
 
@@ -72,16 +54,16 @@ const Login = () => {
 
   return (
     <MainLayout>
-      <div className="flex justify-center items-center min-h-[80vh] bg-gray-50 px-4">
+      <div className="flex flex-col md:flex-row justify-center items-start gap-8 min-h-[80vh] bg-gray-50 px-4 py-8">
         <Card className="w-full max-w-md shadow-lg border-0">
           <CardHeader className="pb-6 pt-8">
-            <CardTitle className="text-2xl font-light text-center">Sign In</CardTitle>
-            <p className="text-center text-gray-500 mt-2">Enter your credentials to access your account</p>
+            <CardTitle className="text-2xl font-light text-center">Đăng Nhập</CardTitle>
+            <p className="text-center text-gray-500 mt-2">Nhập thông tin đăng nhập để truy cập tài khoản của bạn</p>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-sm font-medium text-gray-700">Username</Label>
+                <Label htmlFor="username" className="text-sm font-medium text-gray-700">Tên đăng nhập</Label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User size={18} className="text-gray-400" />
@@ -89,7 +71,7 @@ const Login = () => {
                   <Input
                     id="username"
                     name="username"
-                    placeholder="Enter your username"
+                    placeholder="Nhập tên đăng nhập"
                     value={formData.username}
                     onChange={handleChange}
                     className="pl-10 bg-white border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
@@ -98,7 +80,7 @@ const Login = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium text-gray-700">Mật khẩu</Label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock size={18} className="text-gray-400" />
@@ -107,7 +89,7 @@ const Login = () => {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder="Nhập mật khẩu"
                     value={formData.password}
                     onChange={handleChange}
                     className="pl-10 pr-10 bg-white border-gray-200 focus:border-indigo-500 focus:ring-indigo-500"
@@ -124,32 +106,6 @@ const Login = () => {
                   </div>
                 </div>
               </div>
-              
-              <div className="pt-4 border-t border-gray-100">
-                <p className="text-center text-sm text-gray-500 mb-3">
-                  For testing purposes, you can use:
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleTestLogin("admin")}
-                    className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700"
-                  >
-                    Login as Admin
-                  </Button>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleTestLogin("user")}
-                    className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700"
-                  >
-                    Login as User
-                  </Button>
-                </div>
-              </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4 pb-8">
               <Button 
@@ -157,17 +113,21 @@ const Login = () => {
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white" 
                 disabled={isLoading}
               >
-                {isLoading ? "Logging in..." : "Sign In"}
+                {isLoading ? "Đang đăng nhập..." : "Đăng Nhập"}
               </Button>
               <div className="text-center text-sm text-gray-500">
-                Don't have an account?{" "}
+                Chưa có tài khoản?{" "}
                 <Link to="/register" className="text-indigo-600 hover:text-indigo-800 font-medium">
-                  Create an account
+                  Tạo tài khoản mới
                 </Link>
               </div>
             </CardFooter>
           </form>
         </Card>
+        
+        <div className="w-full max-w-md mt-6 md:mt-0">
+          <TestLoginPanel />
+        </div>
       </div>
     </MainLayout>
   );

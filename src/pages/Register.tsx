@@ -31,7 +31,7 @@ const Register = () => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error("Mật khẩu không khớp");
       return;
     }
     
@@ -40,10 +40,10 @@ const Register = () => {
     try {
       const { confirmPassword, ...signupData } = formData;
       await authService.register(signupData);
-      toast.success("Registration successful! You can now login.");
+      toast.success("Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
       navigate("/login");
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Lỗi đăng ký:", error);
     } finally {
       setIsLoading(false);
     }
@@ -54,19 +54,19 @@ const Register = () => {
       <div className="flex justify-center items-center min-h-[80vh] py-8 px-4">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl text-center">Register</CardTitle>
+            <CardTitle className="text-2xl text-center">Đăng Ký</CardTitle>
             <CardDescription className="text-center">
-              Create a new account to access our services
+              Tạo tài khoản mới để sử dụng dịch vụ của chúng tôi
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Tên đăng nhập</Label>
                 <Input
                   id="username"
                   name="username"
-                  placeholder="Choose a username"
+                  placeholder="Chọn tên đăng nhập"
                   value={formData.username}
                   onChange={handleChange}
                   required
@@ -78,64 +78,64 @@ const Register = () => {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Nhập email của bạn"
                   value={formData.email}
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">Họ và tên</Label>
                 <Input
                   id="fullName"
                   name="fullName"
-                  placeholder="Enter your full name"
+                  placeholder="Nhập họ và tên của bạn"
                   value={formData.fullName}
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phoneNumber">Phone Number</Label>
+                <Label htmlFor="phoneNumber">Số điện thoại</Label>
                 <Input
                   id="phoneNumber"
                   name="phoneNumber"
-                  placeholder="Enter your phone number"
+                  placeholder="Nhập số điện thoại của bạn"
                   value={formData.phoneNumber}
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">Địa chỉ</Label>
                 <Input
                   id="address"
                   name="address"
-                  placeholder="Enter your address"
+                  placeholder="Nhập địa chỉ của bạn"
                   value={formData.address}
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Mật khẩu</Label>
                 <Input
                   id="password"
                   name="password"
                   type="password"
-                  placeholder="Create a password"
+                  placeholder="Tạo mật khẩu"
                   value={formData.password}
                   onChange={handleChange}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
-                  placeholder="Confirm your password"
+                  placeholder="Xác nhận mật khẩu của bạn"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
@@ -144,12 +144,12 @@ const Register = () => {
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Registering..." : "Register"}
+                {isLoading ? "Đang đăng ký..." : "Đăng Ký"}
               </Button>
               <div className="text-center text-sm">
-                Already have an account?{" "}
+                Đã có tài khoản?{" "}
                 <Link to="/login" className="text-purple-600 hover:underline">
-                  Login
+                  Đăng nhập
                 </Link>
               </div>
             </CardFooter>
