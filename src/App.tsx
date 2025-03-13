@@ -16,6 +16,7 @@ import MyBookings from "./pages/MyBookings";
 import NotFound from "./pages/NotFound";
 import BlogsPage from "./pages/BlogsPage";
 import BlogDetail from "./pages/BlogDetail";
+import UserDashboard from "./pages/UserDashboard";
 
 // Admin pages
 import AdminLayout from "./components/layout/AdminLayout";
@@ -53,6 +54,7 @@ const App = () => (
           <Route path="/my-bookings" element={<MyBookings />} />
           <Route path="/blogs" element={<BlogsPage />} />
           <Route path="/blogs/:id" element={<BlogDetail />} />
+          <Route path="/account" element={<UserDashboard />} />
           
           {/* Admin routes */}
           <Route path="/admin" element={<AdminLayout />}>

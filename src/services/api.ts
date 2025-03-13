@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -393,6 +392,104 @@ const userApi = {
   }
 };
 
+// Settings APIs
+const settingsApi = {
+  getGeneralSettings: async () => {
+    try {
+      const response = await api.get('/settings/general');
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching general settings:", error);
+      // Return default settings as fallback
+      return {
+        siteName: "BeautySkin",
+        siteDescription: "Premium skincare services tailored to your unique needs and goals.",
+        contactEmail: "contact@beautyskin.com",
+        contactPhone: "+84 123 456 789",
+        address: "123 Đường Làm Đẹp, Quận 1, TP. HCM"
+      };
+    }
+  },
+  
+  updateGeneralSettings: async (settings) => {
+    const response = await api.put('/settings/general', settings);
+    return response.data;
+  },
+  
+  getBookingSettings: async () => {
+    try {
+      const response = await api.get('/settings/booking');
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching booking settings:", error);
+      return {
+        allowFutureBookingsDays: 30,
+        minAdvanceBookingHours: 24,
+        maxServicesPerBooking: 3,
+        requiresPayment: true,
+        requiresConfirmation: true,
+        allowCancellationHours: 48,
+        workingHoursStart: "09:00",
+        workingHoursEnd: "18:00"
+      };
+    }
+  },
+  
+  updateBookingSettings: async (settings) => {
+    const response = await api.put('/settings/booking', settings);
+    return response.data;
+  },
+  
+  getNotificationSettings: async () => {
+    try {
+      const response = await api.get('/settings/notifications');
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching notification settings:", error);
+      return {
+        sendBookingConfirmations: true,
+        sendBookingReminders: true,
+        reminderHoursBefore: 24,
+        sendCancellationNotifications: true,
+        sendAdminNotifications: true,
+        adminNotificationEmail: "admin@beautyskin.com"
+      };
+    }
+  },
+  
+  updateNotificationSettings: async (settings) => {
+    const response = await api.put('/settings/notifications', settings);
+    return response.data;
+  }
+};
+
+// User Profile APIs
+const profileApi = {
+  getUserProfile: async () => {
+    const response = await api.get('/user/profile');
+    return response.data;
+  },
+  
+  updateProfile: async (profileData) => {
+    const response = await api.put('/user/profile', profileData);
+    return response.data;
+  },
+  
+  changePassword: async (passwordData) => {
+    const response = await api.put('/user/change-password', passwordData);
+    return response.data;
+  },
+  
+  uploadAvatar: async (formData) => {
+    const response = await api.post('/user/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  }
+};
+
 // Stats and reports APIs (admin only)
 const statsApi = {
   getDashboardStats: async () => {
@@ -451,5 +548,7 @@ export {
   categoryApi,
   blogApi,
   userApi,
-  statsApi
+  statsApi,
+  settingsApi,
+  profileApi
 };

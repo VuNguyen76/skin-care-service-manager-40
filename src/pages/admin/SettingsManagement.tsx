@@ -11,10 +11,40 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useAdminAuth } from "@/hooks/use-admin-auth";
 import { toast } from "sonner";
 import { Save, RefreshCw, Info } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { settingsApi } from "@/services/api";
 
 const SettingsManagement = () => {
   const { isLoading: authLoading, isAdmin } = useAdminAuth();
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
+  
+  // Fetch general settings
+  const { 
+    data: generalSettingsData, 
+    isLoading: isGeneralLoading 
+  } = useQuery({
+    queryKey: ["settings", "general"],
+    queryFn: settingsApi.getGeneralSettings
+  });
+  
+  // Fetch booking settings
+  const { 
+    data: bookingSettingsData, 
+    isLoading: isBookingLoading 
+  } = useQuery({
+    queryKey: ["settings", "booking"],
+    queryFn: settingsApi.getBookingSettings
+  });
+  
+  // Fetch notification settings
+  const { 
+    data: notificationSettingsData, 
+    isLoading: isNotificationLoading 
+  } = useQuery({
+    queryKey: ["settings", "notifications"],
+    queryFn: settingsApi.getNotificationSettings
+  });
+  
   const [generalSettings, setGeneralSettings] = useState({
     siteName: "Skincare Specialist",
     siteDescription: "Your trusted partner for skincare services and consultations",
@@ -41,6 +71,59 @@ const SettingsManagement = () => {
     sendCancellationNotifications: true,
     sendAdminNotifications: true,
     adminNotificationEmail: "admin@skincarespecialist.com"
+  });
+
+  // Update state when data is fetched
+  useState(() => {
+    if (generalSettingsData) {
+      setGeneralSettings(generalSettingsData);
+    }
+  }, [generalSettingsData]);
+  
+  useState(() => {
+    if (bookingSettingsData) {
+      setBookingSettings(bookingSettingsData);
+    }
+  }, [bookingSettingsData]);
+  
+  useState(() => {
+    if (notificationSettingsData) {
+      setNotificationSettings(notificationSettingsData);
+    }
+  }, [notificationSettingsData]);
+
+  // Mutations for updating settings
+  const generalSettingsMutation = useMutation({
+    mutationFn: settingsApi.updateGeneralSettings,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["settings", "general"] });
+      toast.success("Cài đặt chung đã được lưu thành công");
+    },
+    onError: () => {
+      toast.error("Lỗi khi lưu cài đặt chung");
+    }
+  });
+  
+  const bookingSettingsMutation = useMutation({
+    mutationFn: settingsApi.updateBookingSettings,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["settings", "booking"] });
+      toast.success("Cài đặt đặt lịch đã được lưu thành công");
+    },
+    onError: () => {
+      toast.error("Lỗi khi lưu cài đặt đặt lịch");
+    }
+  });
+  
+  const notificationSettingsMutation = useMutation({
+    mutationFn: settingsApi.updateNotificationSettings,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["settings", "notifications"] });
+      toast.success("Cài đặt thông báo đã được lưu thành công");
+    },
+    onError: () => {
+      toast.error("Lỗi khi lưu cài đặt thông báo");
+    }
   });
 
   const handleGeneralSettingsChange = (e) => {
@@ -82,22 +165,16 @@ const SettingsManagement = () => {
   };
 
   const handleSaveSettings = async (settingsType) => {
-    setLoading(true);
-    
-    try {
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast.success(`${settingsType} settings saved successfully`);
-    } catch (error) {
-      console.error("Error saving settings:", error);
-      toast.error(`Failed to save ${settingsType.toLowerCase()} settings`);
-    } finally {
-      setLoading(false);
+    if (settingsType === "General") {
+      generalSettingsMutation.mutate(generalSettings);
+    } else if (settingsType === "Booking") {
+      bookingSettingsMutation.mutate(bookingSettings);
+    } else if (settingsType === "Notification") {
+      notificationSettingsMutation.mutate(notificationSettings);
     }
   };
 
-  if (authLoading) {
+  if (authLoading || isGeneralLoading || isBookingLoading || isNotificationLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
         <Spinner size="lg" />
@@ -112,27 +189,27 @@ const SettingsManagement = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Manage your application settings and configurations</p>
+        <h1 className="text-3xl font-bold tracking-tight">Cài đặt hệ thống</h1>
+        <p className="text-muted-foreground">Quản lý cài đặt và cấu hình ứng dụng của bạn</p>
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="booking">Booking</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="general">Cài đặt chung</TabsTrigger>
+          <TabsTrigger value="booking">Đặt lịch</TabsTrigger>
+          <TabsTrigger value="notifications">Thông báo</TabsTrigger>
         </TabsList>
         
         <TabsContent value="general">
           <Card>
             <CardHeader>
-              <CardTitle>General Settings</CardTitle>
-              <CardDescription>Manage your site's basic information and contact details</CardDescription>
+              <CardTitle>Cài đặt chung</CardTitle>
+              <CardDescription>Quản lý thông tin cơ bản và thông tin liên hệ của trang web</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="siteName">Site Name</Label>
+                  <Label htmlFor="siteName">Tên trang web</Label>
                   <Input
                     id="siteName"
                     name="siteName"
@@ -142,7 +219,7 @@ const SettingsManagement = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="contactEmail">Contact Email</Label>
+                  <Label htmlFor="contactEmail">Email liên hệ</Label>
                   <Input
                     id="contactEmail"
                     name="contactEmail"
@@ -154,7 +231,7 @@ const SettingsManagement = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="siteDescription">Site Description</Label>
+                <Label htmlFor="siteDescription">Mô tả trang web</Label>
                 <Textarea
                   id="siteDescription"
                   name="siteDescription"
@@ -166,7 +243,7 @@ const SettingsManagement = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="contactPhone">Contact Phone</Label>
+                  <Label htmlFor="contactPhone">Số điện thoại liên hệ</Label>
                   <Input
                     id="contactPhone"
                     name="contactPhone"
@@ -177,7 +254,7 @@ const SettingsManagement = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">Địa chỉ</Label>
                 <Textarea
                   id="address"
                   name="address"
@@ -188,14 +265,17 @@ const SettingsManagement = () => {
               </div>
             </CardContent>
             <CardFooter className="justify-between">
-              <Button variant="outline" onClick={() => toast.info("Settings reset to default values")}>
+              <Button variant="outline" onClick={() => toast.info("Đã đặt lại cài đặt về giá trị mặc định")}>
                 <RefreshCw className="mr-2 h-4 w-4" />
-                Reset to Default
+                Đặt lại mặc định
               </Button>
-              <Button onClick={() => handleSaveSettings("General")} disabled={loading}>
-                {loading && <Spinner className="mr-2" size="sm" />}
+              <Button 
+                onClick={() => handleSaveSettings("General")} 
+                disabled={generalSettingsMutation.isPending}
+              >
+                {generalSettingsMutation.isPending && <Spinner className="mr-2" size="sm" />}
                 <Save className="mr-2 h-4 w-4" />
-                Save Changes
+                Lưu thay đổi
               </Button>
             </CardFooter>
           </Card>
@@ -204,14 +284,14 @@ const SettingsManagement = () => {
         <TabsContent value="booking">
           <Card>
             <CardHeader>
-              <CardTitle>Booking Settings</CardTitle>
-              <CardDescription>Configure how bookings work in your application</CardDescription>
+              <CardTitle>Cài đặt đặt lịch</CardTitle>
+              <CardDescription>Cấu hình cách thức hoạt động của việc đặt lịch trong ứng dụng</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="allowFutureBookingsDays">Allow Future Bookings (days)</Label>
+                    <Label htmlFor="allowFutureBookingsDays">Cho phép đặt lịch trước (ngày)</Label>
                     <div className="flex items-center gap-2">
                       <Input
                         id="allowFutureBookingsDays"
@@ -222,15 +302,15 @@ const SettingsManagement = () => {
                         value={bookingSettings.allowFutureBookingsDays}
                         onChange={handleBookingSettingsChange}
                       />
-                      <span className="text-sm text-muted-foreground">days</span>
+                      <span className="text-sm text-muted-foreground">ngày</span>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      How far in advance customers can book appointments.
+                      Khách hàng có thể đặt lịch trước bao nhiêu ngày.
                     </p>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="minAdvanceBookingHours">Minimum Booking Notice</Label>
+                    <Label htmlFor="minAdvanceBookingHours">Thời gian đặt trước tối thiểu</Label>
                     <div className="flex items-center gap-2">
                       <Input
                         id="minAdvanceBookingHours"
@@ -241,15 +321,15 @@ const SettingsManagement = () => {
                         value={bookingSettings.minAdvanceBookingHours}
                         onChange={handleBookingSettingsChange}
                       />
-                      <span className="text-sm text-muted-foreground">hours</span>
+                      <span className="text-sm text-muted-foreground">giờ</span>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Minimum hours in advance customers must book.
+                      Khách hàng phải đặt lịch trước tối thiểu bao nhiêu giờ.
                     </p>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="maxServicesPerBooking">Maximum Services Per Booking</Label>
+                    <Label htmlFor="maxServicesPerBooking">Số dịch vụ tối đa mỗi lần đặt lịch</Label>
                     <Input
                       id="maxServicesPerBooking"
                       name="maxServicesPerBooking"
@@ -260,14 +340,14 @@ const SettingsManagement = () => {
                       onChange={handleBookingSettingsChange}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Maximum number of services allowed in a single booking.
+                      Số lượng dịch vụ tối đa được phép trong một lần đặt lịch.
                     </p>
                   </div>
                 </div>
                 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="workingHoursStart">Working Hours (Start)</Label>
+                    <Label htmlFor="workingHoursStart">Giờ làm việc (Bắt đầu)</Label>
                     <Input
                       id="workingHoursStart"
                       name="workingHoursStart"
@@ -278,7 +358,7 @@ const SettingsManagement = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="workingHoursEnd">Working Hours (End)</Label>
+                    <Label htmlFor="workingHoursEnd">Giờ làm việc (Kết thúc)</Label>
                     <Input
                       id="workingHoursEnd"
                       name="workingHoursEnd"
@@ -289,7 +369,7 @@ const SettingsManagement = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="allowCancellationHours">Cancellation Policy</Label>
+                    <Label htmlFor="allowCancellationHours">Chính sách hủy lịch</Label>
                     <div className="flex items-center gap-2">
                       <Input
                         id="allowCancellationHours"
@@ -300,23 +380,23 @@ const SettingsManagement = () => {
                         value={bookingSettings.allowCancellationHours}
                         onChange={handleBookingSettingsChange}
                       />
-                      <span className="text-sm text-muted-foreground">hours</span>
+                      <span className="text-sm text-muted-foreground">giờ</span>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      How many hours before the appointment customers can cancel.
+                      Khách hàng có thể hủy lịch trước cuộc hẹn bao nhiêu giờ.
                     </p>
                   </div>
                 </div>
               </div>
               
               <div className="border-t pt-4">
-                <h3 className="font-medium mb-4">Booking Requirements</h3>
+                <h3 className="font-medium mb-4">Yêu cầu đặt lịch</h3>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="requiresPayment">Require Payment</Label>
+                      <Label htmlFor="requiresPayment">Yêu cầu thanh toán</Label>
                       <p className="text-sm text-muted-foreground">
-                        Require payment at the time of booking
+                        Yêu cầu thanh toán tại thời điểm đặt lịch
                       </p>
                     </div>
                     <Switch
@@ -328,9 +408,9 @@ const SettingsManagement = () => {
                   
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="requiresConfirmation">Require Confirmation</Label>
+                      <Label htmlFor="requiresConfirmation">Yêu cầu xác nhận</Label>
                       <p className="text-sm text-muted-foreground">
-                        Bookings require admin confirmation before they're finalized
+                        Đặt lịch cần được xác nhận bởi quản trị viên trước khi hoàn tất
                       </p>
                     </div>
                     <Switch
@@ -343,14 +423,17 @@ const SettingsManagement = () => {
               </div>
             </CardContent>
             <CardFooter className="justify-between">
-              <Button variant="outline" onClick={() => toast.info("Settings reset to default values")}>
+              <Button variant="outline" onClick={() => toast.info("Đã đặt lại cài đặt về giá trị mặc định")}>
                 <RefreshCw className="mr-2 h-4 w-4" />
-                Reset to Default
+                Đặt lại mặc định
               </Button>
-              <Button onClick={() => handleSaveSettings("Booking")} disabled={loading}>
-                {loading && <Spinner className="mr-2" size="sm" />}
+              <Button 
+                onClick={() => handleSaveSettings("Booking")} 
+                disabled={bookingSettingsMutation.isPending}
+              >
+                {bookingSettingsMutation.isPending && <Spinner className="mr-2" size="sm" />}
                 <Save className="mr-2 h-4 w-4" />
-                Save Changes
+                Lưu thay đổi
               </Button>
             </CardFooter>
           </Card>
@@ -359,16 +442,16 @@ const SettingsManagement = () => {
         <TabsContent value="notifications">
           <Card>
             <CardHeader>
-              <CardTitle>Notification Settings</CardTitle>
-              <CardDescription>Configure email notifications for your business and customers</CardDescription>
+              <CardTitle>Cài đặt thông báo</CardTitle>
+              <CardDescription>Cấu hình thông báo email cho doanh nghiệp và khách hàng</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label htmlFor="sendBookingConfirmations">Booking Confirmations</Label>
+                    <Label htmlFor="sendBookingConfirmations">Xác nhận đặt lịch</Label>
                     <p className="text-sm text-muted-foreground">
-                      Send confirmation emails after a booking is made
+                      Gửi email xác nhận sau khi đặt lịch thành công
                     </p>
                   </div>
                   <Switch
@@ -380,9 +463,9 @@ const SettingsManagement = () => {
                 
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label htmlFor="sendBookingReminders">Booking Reminders</Label>
+                    <Label htmlFor="sendBookingReminders">Nhắc nhở cuộc hẹn</Label>
                     <p className="text-sm text-muted-foreground">
-                      Send reminder emails before appointments
+                      Gửi email nhắc nhở trước cuộc hẹn
                     </p>
                   </div>
                   <Switch
@@ -394,7 +477,7 @@ const SettingsManagement = () => {
                 
                 {notificationSettings.sendBookingReminders && (
                   <div className="ml-8 space-y-2">
-                    <Label htmlFor="reminderHoursBefore">Reminder Time</Label>
+                    <Label htmlFor="reminderHoursBefore">Thời gian nhắc nhở</Label>
                     <div className="flex items-center gap-2">
                       <Input
                         id="reminderHoursBefore"
@@ -405,16 +488,16 @@ const SettingsManagement = () => {
                         value={notificationSettings.reminderHoursBefore}
                         onChange={handleNotificationSettingsChange}
                       />
-                      <span className="text-sm text-muted-foreground">hours before appointment</span>
+                      <span className="text-sm text-muted-foreground">giờ trước cuộc hẹn</span>
                     </div>
                   </div>
                 )}
                 
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label htmlFor="sendCancellationNotifications">Cancellation Notifications</Label>
+                    <Label htmlFor="sendCancellationNotifications">Thông báo hủy lịch</Label>
                     <p className="text-sm text-muted-foreground">
-                      Send notifications when bookings are cancelled
+                      Gửi thông báo khi lịch hẹn bị hủy
                     </p>
                   </div>
                   <Switch
@@ -426,9 +509,9 @@ const SettingsManagement = () => {
                 
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label htmlFor="sendAdminNotifications">Admin Notifications</Label>
+                    <Label htmlFor="sendAdminNotifications">Thông báo cho quản trị viên</Label>
                     <p className="text-sm text-muted-foreground">
-                      Send notifications to admin for new bookings and changes
+                      Gửi thông báo cho quản trị viên về đặt lịch mới và các thay đổi
                     </p>
                   </div>
                   <Switch
@@ -440,7 +523,7 @@ const SettingsManagement = () => {
                 
                 {notificationSettings.sendAdminNotifications && (
                   <div className="ml-8 space-y-2">
-                    <Label htmlFor="adminNotificationEmail">Admin Email</Label>
+                    <Label htmlFor="adminNotificationEmail">Email quản trị viên</Label>
                     <Input
                       id="adminNotificationEmail"
                       name="adminNotificationEmail"
@@ -455,19 +538,22 @@ const SettingsManagement = () => {
               <div className="flex items-center p-4 border rounded-md bg-amber-50 text-amber-800">
                 <Info className="h-5 w-5 mr-2 flex-shrink-0" />
                 <p className="text-sm">
-                  These notification settings require a properly configured email service to work. Make sure your email service is set up correctly.
+                  Các cài đặt thông báo này yêu cầu dịch vụ email được cấu hình đúng cách để hoạt động. Đảm bảo dịch vụ email của bạn được thiết lập chính xác.
                 </p>
               </div>
             </CardContent>
             <CardFooter className="justify-between">
-              <Button variant="outline" onClick={() => toast.info("Settings reset to default values")}>
+              <Button variant="outline" onClick={() => toast.info("Đã đặt lại cài đặt về giá trị mặc định")}>
                 <RefreshCw className="mr-2 h-4 w-4" />
-                Reset to Default
+                Đặt lại mặc định
               </Button>
-              <Button onClick={() => handleSaveSettings("Notification")} disabled={loading}>
-                {loading && <Spinner className="mr-2" size="sm" />}
+              <Button 
+                onClick={() => handleSaveSettings("Notification")} 
+                disabled={notificationSettingsMutation.isPending}
+              >
+                {notificationSettingsMutation.isPending && <Spinner className="mr-2" size="sm" />}
                 <Save className="mr-2 h-4 w-4" />
-                Save Changes
+                Lưu thay đổi
               </Button>
             </CardFooter>
           </Card>
