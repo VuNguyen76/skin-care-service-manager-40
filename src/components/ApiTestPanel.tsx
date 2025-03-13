@@ -45,28 +45,43 @@ const ApiTestPanel = () => {
     service: [
       { label: "Tất cả dịch vụ", method: "getAll" },
       { label: "Dịch vụ theo ID", method: "getById", params: 1 },
-      { label: "Dịch vụ theo danh mục", method: "getByCategory", params: 1 }
+      { label: "Dịch vụ theo danh mục", method: "getByCategory", params: 1 },
+      { label: "Dịch vụ theo chuyên gia", method: "getBySpecialist", params: 1 }
     ],
     specialist: [
       { label: "Tất cả chuyên gia", method: "getAll" },
       { label: "Chuyên gia theo ID", method: "getById", params: 1 },
       { label: "Chuyên gia theo dịch vụ", method: "getByService", params: 1 },
-      { label: "Chuyên gia đánh giá cao", method: "getTopRated" }
+      { label: "Chuyên gia đánh giá cao", method: "getTopRated" },
+      { label: "Lịch làm việc của chuyên gia", method: "getSchedule", params: 1 }
     ],
     booking: [
       { label: "Lịch đặt của tôi", method: "getMyBookings" },
-      { label: "Chi tiết lịch đặt", method: "getBookingDetails", params: 1 }
+      { label: "Chi tiết lịch đặt", method: "getBookingDetails", params: 1 },
+      { label: "Kiểm tra khả dụng", method: "checkAvailability", params: { specialistId: 1, date: new Date().toISOString().split('T')[0] } }
     ],
     review: [
       { label: "Đánh giá theo chuyên gia", method: "getBySpecialist", params: 1 },
+      { label: "Đánh giá theo dịch vụ", method: "getByService", params: 1 },
       { label: "Đánh giá của tôi", method: "getMyReviews" }
     ],
     category: [
       { label: "Tất cả danh mục", method: "getAll" },
-      { label: "Danh mục theo ID", method: "getById", params: 1 }
+      { label: "Danh mục theo ID", method: "getById", params: 1 },
+      { label: "Dịch vụ trong danh mục", method: "getServices", params: 1 }
+    ],
+    user: [
+      { label: "Thông tin người dùng hiện tại", method: "getCurrentUser" },
+      { label: "Kiểm tra trạng thái đăng nhập", method: "checkAuth" }
     ],
     profile: [
-      { label: "Thông tin cá nhân", method: "getUserProfile" }
+      { label: "Thông tin cá nhân", method: "getUserProfile" },
+      { label: "Cập nhật thông tin cá nhân", method: "updateProfile", params: { fullName: "Nguyễn Văn A", phoneNumber: "0123456789" } }
+    ],
+    stats: [
+      { label: "Thống kê tổng quan", method: "getOverview" },
+      { label: "Thống kê đặt lịch", method: "getBookingStats" },
+      { label: "Thống kê doanh thu", method: "getRevenueStats" }
     ],
     settings: [
       { label: "Cài đặt chung", method: "getGeneralSettings" },
@@ -115,6 +130,7 @@ const ApiTestPanel = () => {
       
       setResponseData(result);
     } catch (err: any) {
+      console.error("Error fetching API:", err);
       setError(err.message || "Đã xảy ra lỗi khi gọi API");
     } finally {
       setIsLoading(false);
@@ -142,7 +158,9 @@ const ApiTestPanel = () => {
                 <SelectItem value="booking">API Đặt lịch</SelectItem>
                 <SelectItem value="category">API Danh mục</SelectItem>
                 <SelectItem value="review">API Đánh giá</SelectItem>
+                <SelectItem value="user">API Người dùng</SelectItem>
                 <SelectItem value="profile">API Hồ sơ</SelectItem>
+                <SelectItem value="stats">API Thống kê</SelectItem>
                 <SelectItem value="settings">API Cài đặt</SelectItem>
               </SelectContent>
             </Select>

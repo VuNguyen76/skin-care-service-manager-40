@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Calendar, Search, LogOut } from "lucide-react";
+import { Menu, X, User, Calendar, LogOut } from "lucide-react";
 import authService from "@/services/authService";
 import Logo from "@/components/Logo";
 import {
@@ -56,10 +56,6 @@ const Navbar = () => {
           
           {/* Desktop Right Menu */}
           <div className="hidden md:flex items-center space-x-4">
-            <button className="text-gray-800 hover:text-primary">
-              <Search size={20} />
-            </button>
-            
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -59,7 +59,7 @@ const authService = {
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    toast.success("Đã đăng xuất");
+    toast.success("Đã đăng xuất thành công");
     window.location.href = "/login";
   },
 
@@ -77,7 +77,7 @@ const authService = {
     return user && user.roles && user.roles.includes("ROLE_ADMIN");
   },
 
-  // Test accounts
+  // Tài khoản thử nghiệm
   getTestAccounts: () => {
     return {
       admin: {
@@ -93,7 +93,7 @@ const authService = {
     };
   },
 
-  // For development - simulate login with test accounts
+  // Dành cho phát triển - giả lập đăng nhập với tài khoản thử nghiệm
   simulateLogin: (accountType: "admin" | "user") => {
     const accounts = authService.getTestAccounts();
     const account = accounts[accountType];
