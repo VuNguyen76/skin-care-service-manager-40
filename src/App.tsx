@@ -23,6 +23,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import BlogManagement from "./pages/admin/BlogManagement";
 import ServicesManagement from "./pages/admin/ServicesManagement";
 import SpecialistsManagement from "./pages/admin/SpecialistsManagement";
+import BookingManagement from "./pages/admin/BookingManagement";
+import SettingsManagement from "./pages/admin/SettingsManagement";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,6 +60,8 @@ const App = () => (
             <Route path="blogs" element={<BlogManagement />} />
             <Route path="services" element={<ServicesManagement />} />
             <Route path="specialists" element={<SpecialistsManagement />} />
+            <Route path="bookings" element={<BookingManagement />} />
+            <Route path="settings" element={<SettingsManagement />} />
           </Route>
           
           {/* Catch-all route */}
