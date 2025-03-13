@@ -1,19 +1,15 @@
 
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { statsApi } from "@/services/api";
 import { Spinner } from "@/components/ui/spinner";
 import { Calendar, Users, Tag, FileText } from "lucide-react";
-import { BarChart, LineChart } from "recharts";
-import ApiTestPanel from "@/components/ApiTestPanel";
 
 const AdminDashboard = () => {
   const { data: dashboardStats, isLoading, error } = useQuery({
     queryKey: ["stats", "dashboard"],
     queryFn: () => statsApi.getDashboardStats(),
-    // For testing purposes, we'll use a fallback when API is not available
     retry: false
   });
 
@@ -81,20 +77,6 @@ const AdminDashboard = () => {
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalBookings}</div>
             <p className="text-xs text-muted-foreground">Completed appointments</p>
-          </CardContent>
-        </Card>
-      </div>
-      
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="col-span-2">
-          <CardHeader>
-            <CardTitle>API Testing Panel</CardTitle>
-            <CardDescription>
-              Test API functionality to verify backend connections
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ApiTestPanel />
           </CardContent>
         </Card>
       </div>

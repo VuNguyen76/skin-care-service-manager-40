@@ -3,7 +3,6 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
-import TestLoginPanel from "@/components/TestLoginPanel";
 
 const Index = () => {
   return (
@@ -26,11 +25,6 @@ const Index = () => {
                 <Link to="/quiz">Take Skin Quiz</Link>
               </Button>
             </div>
-          </div>
-          
-          <div className="my-12 p-4 border border-dashed border-gray-300 rounded-lg">
-            <h2 className="text-xl font-bold mb-4 text-center">Testing Panel (Development Only)</h2>
-            <TestLoginPanel />
           </div>
         </div>
       </div>
