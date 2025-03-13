@@ -1,11 +1,15 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, ShoppingBag, Search } from "lucide-react";
+import { Menu, X, User, Calendar, Search } from "lucide-react";
+import authService from "@/services/authService";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const isAuthenticated = authService.isAuthenticated();
+  const isAdmin = authService.isAdmin();
 
   return (
     <nav className="bg-white border-b border-gray-100">
@@ -21,20 +25,20 @@ const Navbar = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-sm text-gray-800 hover:text-black">
-              Home
+            <Link to="/" className={`text-sm ${location.pathname === '/' ? 'text-black font-medium' : 'text-gray-800 hover:text-black'}`}>
+              Trang chủ
             </Link>
-            <Link to="/services" className="text-sm text-gray-800 hover:text-black">
-              Services
+            <Link to="/services" className={`text-sm ${location.pathname === '/services' ? 'text-black font-medium' : 'text-gray-800 hover:text-black'}`}>
+              Dịch vụ
             </Link>
-            <Link to="/specialists" className="text-sm text-gray-800 hover:text-black">
-              Specialists
+            <Link to="/specialists" className={`text-sm ${location.pathname === '/specialists' ? 'text-black font-medium' : 'text-gray-800 hover:text-black'}`}>
+              Chuyên gia
             </Link>
-            <Link to="/quiz" className="text-sm text-gray-800 hover:text-black">
-              Skin Quiz
+            <Link to="/quiz" className={`text-sm ${location.pathname === '/quiz' ? 'text-black font-medium' : 'text-gray-800 hover:text-black'}`}>
+              Kiểm tra da
             </Link>
-            <Link to="/blog" className="text-sm text-gray-800 hover:text-black">
-              Blog
+            <Link to="/blogs" className={`text-sm ${location.pathname === '/blogs' ? 'text-black font-medium' : 'text-gray-800 hover:text-black'}`}>
+              Bài viết
             </Link>
           </div>
           
@@ -43,12 +47,30 @@ const Navbar = () => {
             <button className="text-gray-800 hover:text-black">
               <Search size={20} />
             </button>
-            <Link to="/login" className="text-gray-800 hover:text-black">
-              <User size={20} />
-            </Link>
-            <Link to="/register">
+            {isAuthenticated ? (
+              <>
+                <Link to="/my-bookings" className="text-gray-800 hover:text-black">
+                  <Calendar size={20} />
+                </Link>
+                <Link to="/account" className="text-gray-800 hover:text-black">
+                  <User size={20} />
+                </Link>
+                {isAdmin && (
+                  <Link to="/admin">
+                    <Button variant="outline" className="border-black text-black hover:bg-gray-100">
+                      Quản trị
+                    </Button>
+                  </Link>
+                )}
+              </>
+            ) : (
+              <Link to="/login" className="text-gray-800 hover:text-black">
+                <User size={20} />
+              </Link>
+            )}
+            <Link to="/booking">
               <Button className="bg-black hover:bg-gray-800 text-white rounded-none">
-                Book Now
+                Đặt lịch ngay
               </Button>
             </Link>
           </div>
@@ -71,55 +93,96 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
               to="/"
-              className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-50"
+              className={`block px-3 py-2 text-base font-medium ${location.pathname === '/' ? 'text-black' : 'text-gray-800 hover:bg-gray-50'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              Home
+              Trang chủ
             </Link>
             <Link
               to="/services"
-              className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-50"
+              className={`block px-3 py-2 text-base font-medium ${location.pathname === '/services' ? 'text-black' : 'text-gray-800 hover:bg-gray-50'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              Services
+              Dịch vụ
             </Link>
             <Link
               to="/specialists"
-              className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-50"
+              className={`block px-3 py-2 text-base font-medium ${location.pathname === '/specialists' ? 'text-black' : 'text-gray-800 hover:bg-gray-50'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              Specialists
+              Chuyên gia
             </Link>
             <Link
               to="/quiz"
-              className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-50"
+              className={`block px-3 py-2 text-base font-medium ${location.pathname === '/quiz' ? 'text-black' : 'text-gray-800 hover:bg-gray-50'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              Skin Quiz
+              Kiểm tra da
             </Link>
             <Link
-              to="/blog"
-              className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-50"
+              to="/blogs"
+              className={`block px-3 py-2 text-base font-medium ${location.pathname === '/blogs' ? 'text-black' : 'text-gray-800 hover:bg-gray-50'}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              Blog
+              Bài viết
             </Link>
+            {isAuthenticated && (
+              <>
+                <Link
+                  to="/my-bookings"
+                  className={`block px-3 py-2 text-base font-medium ${location.pathname === '/my-bookings' ? 'text-black' : 'text-gray-800 hover:bg-gray-50'}`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Lịch hẹn của tôi
+                </Link>
+                <Link
+                  to="/account"
+                  className={`block px-3 py-2 text-base font-medium ${location.pathname === '/account' ? 'text-black' : 'text-gray-800 hover:bg-gray-50'}`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Tài khoản
+                </Link>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className={`block px-3 py-2 text-base font-medium ${location.pathname.startsWith('/admin') ? 'text-black' : 'text-gray-800 hover:bg-gray-50'}`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Quản trị
+                  </Link>
+                )}
+              </>
+            )}
             <div className="pt-4 pb-3 border-t border-gray-200">
               <div className="flex items-center justify-between px-3">
-                <Link
-                  to="/login"
-                  className="text-gray-800 hover:text-black"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="text-gray-800 hover:text-black"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Register
-                </Link>
+                {!isAuthenticated ? (
+                  <>
+                    <Link
+                      to="/login"
+                      className="text-gray-800 hover:text-black"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Đăng nhập
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="text-gray-800 hover:text-black"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Đăng ký
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    to="/booking"
+                    className="w-full"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Button className="w-full bg-black hover:bg-gray-800 text-white">
+                      Đặt lịch ngay
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

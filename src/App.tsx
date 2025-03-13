@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -43,6 +43,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -65,6 +66,9 @@ const App = () => (
             <Route path="bookings" element={<BookingManagement />} />
             <Route path="settings" element={<SettingsManagement />} />
           </Route>
+          
+          {/* Redirect /book-service/:id to /booking */}
+          <Route path="/book-service/:id" element={<Navigate to="/booking" replace />} />
           
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
