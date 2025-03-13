@@ -41,7 +41,7 @@ const authService = {
       setAuthData(response.data);
       return response.data;
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Lỗi đăng nhập:", error);
       throw error;
     }
   },
@@ -51,7 +51,7 @@ const authService = {
       const response = await api.post("/auth/signup", registerData);
       return response.data;
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Lỗi đăng ký:", error);
       throw error;
     }
   },
@@ -59,6 +59,7 @@ const authService = {
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    toast.success("Đã đăng xuất");
     window.location.href = "/login";
   },
 
@@ -107,7 +108,7 @@ const authService = {
       };
       
       setAuthData(mockData);
-      toast.success(`Logged in as ${accountType}`);
+      toast.success(`Đã đăng nhập với tài khoản ${accountType === "admin" ? "quản trị viên" : "người dùng"}`);
       return mockData;
     }
     

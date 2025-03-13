@@ -116,30 +116,29 @@ const SettingsManagement = () => {
   const updateSettingsMutation = useMutation({
     mutationFn: settingsApi.updateSettings,
     onSuccess: () => {
-      // Fixed: Removed extra arguments in invalidateQueries
       queryClient.invalidateQueries({ queryKey: ["settings"] });
       toast.success("Cài đặt đã được cập nhật");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error("Lỗi khi cập nhật cài đặt: " + error.message);
     },
   });
 
-  const onGeneralSubmit = (data) => {
+  const onGeneralSubmit = (data: any) => {
     updateSettingsMutation.mutate({
       category: "general",
       settings: data,
     });
   };
 
-  const onContactSubmit = (data) => {
+  const onContactSubmit = (data: any) => {
     updateSettingsMutation.mutate({
       category: "contact",
       settings: data,
     });
   };
 
-  const onSocialSubmit = (data) => {
+  const onSocialSubmit = (data: any) => {
     updateSettingsMutation.mutate({
       category: "social",
       settings: data,
@@ -160,7 +159,7 @@ const SettingsManagement = () => {
   if (error) {
     return (
       <div className="p-8 text-center">
-        <p className="text-red-500">Lỗi khi tải cài đặt: {error.message}</p>
+        <p className="text-red-500">Lỗi khi tải cài đặt: {(error as Error).message}</p>
         <Button
           className="mt-4"
           onClick={() => {
@@ -208,7 +207,7 @@ const SettingsManagement = () => {
                   <Input
                     id="siteName"
                     {...generalForm.register("siteName")}
-                    placeholder="BeautySkin"
+                    placeholder="BEAUTYCARE"
                   />
                 </div>
                 <div className="space-y-2">
@@ -224,7 +223,7 @@ const SettingsManagement = () => {
                   <Textarea
                     id="footerText"
                     {...generalForm.register("footerText")}
-                    placeholder="BeautySkin cung cấp các dịch vụ chăm sóc da chuyên nghiệp."
+                    placeholder="BEAUTYCARE cung cấp các dịch vụ chăm sóc da chuyên nghiệp."
                   />
                 </div>
                 <div className="space-y-2">
@@ -232,7 +231,7 @@ const SettingsManagement = () => {
                   <Input
                     id="copyright"
                     {...generalForm.register("copyright")}
-                    placeholder="© 2023 BeautySkin. Đã đăng ký Bản quyền."
+                    placeholder="© 2023 BEAUTYCARE. Đã đăng ký Bản quyền."
                   />
                 </div>
                 <div className="flex justify-end">
@@ -278,7 +277,7 @@ const SettingsManagement = () => {
                     id="email"
                     type="email"
                     {...contactForm.register("email")}
-                    placeholder="contact@beautyskin.com"
+                    placeholder="contact@beautycare.com"
                   />
                 </div>
                 <div className="space-y-2">
@@ -315,7 +314,7 @@ const SettingsManagement = () => {
                   <Input
                     id="facebook"
                     {...socialForm.register("facebook")}
-                    placeholder="https://facebook.com/beautyskin"
+                    placeholder="https://facebook.com/beautycare"
                   />
                 </div>
                 <div className="space-y-2">
@@ -323,7 +322,7 @@ const SettingsManagement = () => {
                   <Input
                     id="instagram"
                     {...socialForm.register("instagram")}
-                    placeholder="https://instagram.com/beautyskin"
+                    placeholder="https://instagram.com/beautycare"
                   />
                 </div>
                 <div className="space-y-2">
@@ -331,7 +330,7 @@ const SettingsManagement = () => {
                   <Input
                     id="twitter"
                     {...socialForm.register("twitter")}
-                    placeholder="https://twitter.com/beautyskin"
+                    placeholder="https://twitter.com/beautycare"
                   />
                 </div>
                 <div className="space-y-2">
@@ -339,7 +338,7 @@ const SettingsManagement = () => {
                   <Input
                     id="youtube"
                     {...socialForm.register("youtube")}
-                    placeholder="https://youtube.com/beautyskin"
+                    placeholder="https://youtube.com/beautycare"
                   />
                 </div>
                 <div className="flex justify-end">
