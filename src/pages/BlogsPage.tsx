@@ -27,7 +27,7 @@ const BlogsPage = () => {
     return (
       <MainLayout>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <h2 className="text-2xl font-medium mb-4">Đã xảy ra lỗi khi tải bài viết</h2>
+          <h2 className="text-2xl font-semibold mb-4">Đã xảy ra lỗi khi tải bài viết</h2>
           <p className="text-gray-600 mb-8">Vui lòng thử lại sau</p>
         </div>
       </MainLayout>
@@ -40,7 +40,7 @@ const BlogsPage = () => {
       <div className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-light mb-4 text-gray-900">Nhật ký chăm sóc da</h1>
+            <h1 className="text-4xl md:text-5xl font-semibold mb-4 text-gray-900">Nhật ký chăm sóc da</h1>
             <p className="text-lg text-gray-600">
               Lời khuyên và kiến thức chuyên sâu cho hành trình chăm sóc da cá nhân của bạn
             </p>
@@ -79,7 +79,7 @@ const BlogsPage = () => {
                     />
                   </div>
                 ) : (
-                  <div className="aspect-[4/3] bg-gray-100 mb-5 flex items-center justify-center text-gray-400 rounded-lg shadow-sm">
+                  <div className="aspect-[4/3] mb-5 flex items-center justify-center rounded-lg shadow-sm overflow-hidden">
                     <img 
                       src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=1000&auto=format&fit=crop" 
                       alt="Ảnh đại diện"
@@ -97,7 +97,7 @@ const BlogsPage = () => {
                   </span>
                 </div>
                 
-                <h3 className="text-xl font-medium mb-3 group-hover:text-indigo-700 transition-colors">{blog.title}</h3>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-indigo-700 transition-colors">{blog.title}</h3>
                 
                 <p className="text-gray-600 mb-4 line-clamp-3">
                   {blog.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
@@ -114,7 +114,7 @@ const BlogsPage = () => {
           </div>
         ) : (
           <div className="text-center py-16 bg-gray-50 rounded-lg">
-            <h3 className="text-xl font-medium mb-2 text-gray-900">Không tìm thấy bài viết</h3>
+            <h3 className="text-xl font-semibold mb-2 text-gray-900">Không tìm thấy bài viết</h3>
             <p className="text-gray-600">Vui lòng thử từ khóa khác</p>
           </div>
         )}

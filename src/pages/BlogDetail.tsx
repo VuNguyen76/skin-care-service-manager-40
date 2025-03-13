@@ -7,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Calendar, User, ArrowLeft, Tag } from "lucide-react";
 import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 import MainLayout from "@/components/layout/MainLayout";
 import { Badge } from "@/components/ui/badge";
 
@@ -33,10 +34,10 @@ const BlogDetail = () => {
     return (
       <MainLayout>
         <div className="container mx-auto py-12 px-4 text-center">
-          <h2 className="text-2xl font-bold mb-4">Blog post not found</h2>
-          <p className="mb-6">The blog post you're looking for doesn't exist or has been removed.</p>
+          <h2 className="text-2xl font-semibold mb-4">Không tìm thấy bài viết</h2>
+          <p className="mb-6">Bài viết bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
           <Link to="/blogs">
-            <Button>Back to Blogs</Button>
+            <Button>Quay lại trang Blog</Button>
           </Link>
         </div>
       </MainLayout>
@@ -50,7 +51,7 @@ const BlogDetail = () => {
           <Link to="/blogs">
             <Button variant="ghost" className="pl-0">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Blogs
+              Quay lại trang Blog
             </Button>
           </Link>
         </div>
@@ -65,7 +66,7 @@ const BlogDetail = () => {
           </div>
         )}
 
-        <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
+        <h1 className="text-4xl font-semibold mb-4">{blog.title}</h1>
         
         <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-muted-foreground">
           {blog.author && (
@@ -78,8 +79,8 @@ const BlogDetail = () => {
             <Calendar className="h-4 w-4 mr-1" />
             <span>
               {blog.publishedAt 
-                ? format(new Date(blog.publishedAt), 'MMM dd, yyyy') 
-                : format(new Date(blog.createdAt), 'MMM dd, yyyy')}
+                ? format(new Date(blog.publishedAt), 'dd MMMM, yyyy', { locale: vi }) 
+                : format(new Date(blog.createdAt), 'dd MMMM, yyyy', { locale: vi })}
             </span>
           </div>
           {blog.tags && blog.tags.length > 0 && (
@@ -93,7 +94,6 @@ const BlogDetail = () => {
         </div>
 
         <div className="prose prose-lg max-w-none">
-          {/* Render content safely - if it's HTML you may need to use dangerouslySetInnerHTML */}
           <div dangerouslySetInnerHTML={{ __html: blog.content }} />
         </div>
       </div>

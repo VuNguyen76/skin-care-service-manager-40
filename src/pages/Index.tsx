@@ -4,18 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import { ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { blogApi } from "@/services/api";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 
 const Index = () => {
+  const { data: latestBlogs } = useQuery({
+    queryKey: ["blogs", "latest"],
+    queryFn: () => blogApi.getAll({ published: true }),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
   return (
     <MainLayout>
       {/* Hero Section */}
       <div className="relative">
-        <div className="w-full h-[80vh] bg-gradient-to-r from-gray-50 to-gray-100 flex items-center">
+        <div className="w-full bg-gradient-to-r from-gray-50 to-gray-100 py-16">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
-                <h1 className="text-4xl md:text-5xl font-light tracking-tight text-gray-900">
-                  Khám phá hành trình <span className="font-medium">chăm sóc da</span> hoàn hảo
+                <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-gray-900">
+                  Khám phá hành trình <span className="font-bold">chăm sóc da</span> hoàn hảo
                 </h1>
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Các phương pháp điều trị da chuyên nghiệp và tư vấn cá nhân hóa
@@ -35,7 +45,7 @@ const Index = () => {
               <div className="hidden md:block">
                 <div className="aspect-[4/5] bg-white rounded-lg overflow-hidden shadow-lg">
                   <img 
-                    src="https://images.unsplash.com/photo-1560099825-acb094a2195d?q=80&w=1000&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1000&auto=format&fit=crop"
                     alt="BeautySkin chăm sóc da"
                     className="w-full h-full object-cover"
                   />
@@ -46,11 +56,60 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Latest Blogs Section */}
+      {latestBlogs && latestBlogs.length > 0 && (
+        <div className="py-16 bg-white">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-semibold mb-4">Bài viết mới nhất</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Khám phá những bài viết mới nhất về chăm sóc da, xu hướng làm đẹp và lời khuyên từ chuyên gia
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {latestBlogs.slice(0, 3).map(blog => (
+                <div key={blog.id} className="group">
+                  <div className="aspect-video bg-gray-50 mb-4 overflow-hidden shadow-sm rounded-lg">
+                    <img 
+                      src={blog.featuredImage || "https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=1000&auto=format&fit=crop"}
+                      alt={blog.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="mb-2 text-sm text-gray-500">
+                    {blog.publishedAt 
+                      ? formatDistanceToNow(new Date(blog.publishedAt), { addSuffix: true, locale: vi }) 
+                      : formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true, locale: vi })}
+                  </div>
+                  <h3 className="text-xl font-medium mb-3 group-hover:text-indigo-700 transition-colors">{blog.title}</h3>
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    {blog.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                  </p>
+                  <Link 
+                    to={`/blogs/${blog.id}`} 
+                    className="text-indigo-600 font-medium inline-flex items-center border-b border-transparent hover:border-indigo-600 pb-1 transition-colors"
+                  >
+                    Xem thêm <ChevronRight className="ml-1 h-4 w-4" />
+                  </Link>
+                </div>
+              ))}
+            </div>
+            
+            <div className="text-center mt-10">
+              <Button asChild variant="outline" className="border-black text-black hover:bg-gray-100 px-8">
+                <Link to="/blogs">Xem tất cả bài viết</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Featured Services Section */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-light mb-4">Dịch vụ nổi bật</h2>
+            <h2 className="text-3xl font-semibold mb-4">Dịch vụ nổi bật</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Các phương pháp điều trị chuyên nghiệp của chúng tôi được thiết kế để giải quyết các vấn đề về da cụ thể và giúp bạn đạt được mục tiêu chăm sóc da.
             </p>
@@ -115,7 +174,7 @@ const Index = () => {
       </div>
 
       {/* Consultation CTA */}
-      <div className="py-16 bg-gray-50">
+      <div className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
@@ -128,7 +187,7 @@ const Index = () => {
               </div>
             </div>
             <div className="space-y-4">
-              <h2 className="text-3xl font-light">Tư vấn da trực tuyến</h2>
+              <h2 className="text-3xl font-semibold">Tư vấn da trực tuyến</h2>
               <p className="text-gray-600">
                 Bạn chưa chắc chắn về phương pháp điều trị nào phù hợp với mình? Hãy thực hiện bài kiểm tra da cá nhân hoặc đặt lịch tư vấn trực tuyến với chuyên gia của chúng tôi.
               </p>
