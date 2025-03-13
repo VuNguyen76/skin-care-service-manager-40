@@ -1,44 +1,47 @@
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export function useAdminAuth() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+export const useAdminAuth = () => {
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAdmin = () => {
-      const user = localStorage.getItem("user");
-      
-      if (!user) {
-        toast.error("You must be logged in to access admin area");
-        navigate("/login");
-        return;
-      }
-
+    const checkAdminStatus = () => {
+      setIsLoading(true);
       try {
-        const userData = JSON.parse(user);
-        const userRoles = userData.roles || [];
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const token = localStorage.getItem("token");
         
-        if (userRoles.includes("ROLE_ADMIN")) {
-          setIsAdmin(true);
-        } else {
-          toast.error("You don't have permission to access admin area");
-          navigate("/");
+        if (!token) {
+          navigate("/login", { replace: true });
+          return;
         }
+        
+        const hasAdminRole = user.roles && 
+          (user.roles.includes("ROLE_ADMIN") || user.roles.includes("ADMIN"));
+          
+        if (!hasAdminRole) {
+          toast.error("You don't have permission to access this page");
+          navigate("/", { replace: true });
+          return;
+        }
+        
+        setIsAdmin(true);
       } catch (error) {
-        console.error("Error parsing user data:", error);
-        toast.error("Authentication error");
-        navigate("/login");
+        console.error("Error checking admin status:", error);
+        navigate("/login", { replace: true });
       } finally {
         setIsLoading(false);
       }
     };
-
-    checkAdmin();
+    
+    checkAdminStatus();
   }, [navigate]);
 
-  return { isLoading, isAdmin };
-}
+  return { isAdmin, isLoading };
+};
+
+export default useAdminAuth;

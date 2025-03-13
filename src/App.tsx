@@ -14,6 +14,15 @@ import SpecialistDetail from "./pages/SpecialistDetail";
 import BookingPage from "./pages/BookingPage";
 import MyBookings from "./pages/MyBookings";
 import NotFound from "./pages/NotFound";
+import BlogsPage from "./pages/BlogsPage";
+import BlogDetail from "./pages/BlogDetail";
+
+// Admin pages
+import AdminLayout from "./components/layout/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import BlogManagement from "./pages/admin/BlogManagement";
+import ServicesManagement from "./pages/admin/ServicesManagement";
+import SpecialistsManagement from "./pages/admin/SpecialistsManagement";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,7 +49,18 @@ const App = () => (
           <Route path="/specialists/:id" element={<SpecialistDetail />} />
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/my-bookings" element={<MyBookings />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/blogs" element={<BlogsPage />} />
+          <Route path="/blogs/:id" element={<BlogDetail />} />
+          
+          {/* Admin routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="blogs" element={<BlogManagement />} />
+            <Route path="services" element={<ServicesManagement />} />
+            <Route path="specialists" element={<SpecialistsManagement />} />
+          </Route>
+          
+          {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

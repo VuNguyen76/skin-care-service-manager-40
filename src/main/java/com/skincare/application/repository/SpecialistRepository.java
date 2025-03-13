@@ -45,4 +45,16 @@ public interface SpecialistRepository extends JpaRepository<Specialist, Long> {
            "WHERE ss.schedule_date BETWEEN :startDate AND :endDate " +
            "GROUP BY s.id", nativeQuery = true)
     List<Specialist> findAllAvailableBetweenDates(String startDate, String endDate);
+    
+    @Query("SELECT s FROM Specialist s WHERE LOWER(s.specialization) LIKE LOWER(concat('%', :keyword, '%')) OR LOWER(s.user.fullName) LIKE LOWER(concat('%', :keyword, '%'))")
+    List<Specialist> searchByKeyword(String keyword);
+    
+    @Query("SELECT s FROM Specialist s LEFT JOIN s.services srv GROUP BY s.id ORDER BY COUNT(srv) DESC")
+    List<Specialist> findMostVersatileSpecialists();
+    
+    @Query("SELECT s FROM Specialist s WHERE s.experience LIKE %:yearsOfExperience%")
+    List<Specialist> findByExperienceContaining(String yearsOfExperience);
+    
+    @Query("SELECT s FROM Specialist s WHERE s.certifications LIKE %:certification%")
+    List<Specialist> findByCertificationsContaining(String certification);
 }
