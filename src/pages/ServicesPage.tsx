@@ -18,7 +18,7 @@ const ServicesPage = () => {
     error: servicesError
   } = useQuery({
     queryKey: ['services'],
-    queryFn: () => serviceApi.getAll({ active: true })
+    queryFn: () => serviceApi.getAll()
   });
 
   // Fetch categories data
