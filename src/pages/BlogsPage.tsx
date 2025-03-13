@@ -6,6 +6,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { Search, Calendar, ChevronRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 import MainLayout from "@/components/layout/MainLayout";
 import { Link } from "react-router-dom";
 
@@ -28,9 +29,9 @@ const BlogsPage = () => {
       <div className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-light mb-4 text-gray-900">Our Skincare Journal</h1>
+            <h1 className="text-4xl md:text-5xl font-light mb-4 text-gray-900">Nhật ký chăm sóc da</h1>
             <p className="text-lg text-gray-600">
-              Expert advice and insights for your personalized skincare journey
+              Lời khuyên và kiến thức chuyên sâu cho hành trình chăm sóc da cá nhân của bạn
             </p>
           </div>
         </div>
@@ -42,7 +43,7 @@ const BlogsPage = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search articles..."
+              placeholder="Tìm kiếm bài viết..."
               className="pl-10 border-gray-200 focus:border-gray-300 focus:ring-gray-300 rounded-md"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -59,7 +60,7 @@ const BlogsPage = () => {
             {filteredBlogs.map(blog => (
               <div key={blog.id} className="group">
                 {blog.featuredImage ? (
-                  <div className="aspect-[4/3] overflow-hidden mb-5">
+                  <div className="aspect-[4/3] overflow-hidden mb-5 rounded-lg shadow-sm">
                     <img 
                       src={blog.featuredImage} 
                       alt={blog.title}
@@ -67,8 +68,8 @@ const BlogsPage = () => {
                     />
                   </div>
                 ) : (
-                  <div className="aspect-[4/3] bg-gray-100 mb-5 flex items-center justify-center text-gray-400">
-                    No Image
+                  <div className="aspect-[4/3] bg-gray-100 mb-5 flex items-center justify-center text-gray-400 rounded-lg shadow-sm">
+                    Không có hình ảnh
                   </div>
                 )}
                 
@@ -76,8 +77,8 @@ const BlogsPage = () => {
                   <Calendar className="h-4 w-4 mr-1" />
                   <span>
                     {blog.publishedAt 
-                      ? formatDistanceToNow(new Date(blog.publishedAt), { addSuffix: true }) 
-                      : formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
+                      ? formatDistanceToNow(new Date(blog.publishedAt), { addSuffix: true, locale: vi }) 
+                      : formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true, locale: vi })}
                   </span>
                 </div>
                 
@@ -91,15 +92,15 @@ const BlogsPage = () => {
                   to={`/blogs/${blog.id}`} 
                   className="text-indigo-600 font-medium inline-flex items-center border-b border-transparent hover:border-indigo-600 pb-1 transition-colors"
                 >
-                  Read More <ChevronRight className="ml-1 h-4 w-4" />
+                  Xem thêm <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </div>
             ))}
           </div>
         ) : (
           <div className="text-center py-16 bg-gray-50 rounded-lg">
-            <h3 className="text-xl font-medium mb-2 text-gray-900">No articles found</h3>
-            <p className="text-gray-600">Try changing your search term</p>
+            <h3 className="text-xl font-medium mb-2 text-gray-900">Không tìm thấy bài viết</h3>
+            <p className="text-gray-600">Vui lòng thử từ khóa khác</p>
           </div>
         )}
       </div>

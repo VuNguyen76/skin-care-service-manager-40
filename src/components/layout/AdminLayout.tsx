@@ -33,7 +33,7 @@ import authService from "@/services/authService";
 
 const AdminLayout = () => {
   const isMobile = useIsMobile();
-  const [collapsed, setCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const { isAdmin, isLoading } = useAdminAuth();
   const navigate = useNavigate();
@@ -44,12 +44,12 @@ const AdminLayout = () => {
   }, []);
 
   const toggleSidebar = () => {
-    setCollapsed(!collapsed);
+    setSidebarCollapsed(!sidebarCollapsed);
   };
 
   const handleLogout = () => {
     authService.logout();
-    toast.success("Logged out successfully");
+    toast.success("Đăng xuất thành công");
   };
 
   if (isLoading) {
@@ -57,7 +57,7 @@ const AdminLayout = () => {
       <div className="flex items-center justify-center h-screen bg-gray-50">
         <div className="text-center">
           <div className="spinner h-8 w-8 mx-auto mb-4"></div>
-          <p className="text-gray-600">Checking permissions...</p>
+          <p className="text-gray-600">Đang kiểm tra quyền truy cập...</p>
         </div>
       </div>
     );
@@ -65,11 +65,11 @@ const AdminLayout = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen bg-gray-50">
-        <Sidebar collapsed={collapsed} className="border-r bg-white shadow-sm">
+      <div className="flex min-h-screen bg-gray-50 w-full">
+        <Sidebar className="border-r bg-white shadow-sm">
           <SidebarHeader>
             <div className="flex items-center justify-between px-4 py-3">
-              {!collapsed && <h2 className="text-lg font-medium text-gray-900">BeautySkin</h2>}
+              {!sidebarCollapsed && <h2 className="text-lg font-medium text-gray-900">BeautySkin</h2>}
               <Button variant="ghost" size="icon" onClick={toggleSidebar} className="text-gray-500">
                 <Menu />
               </Button>
@@ -77,14 +77,14 @@ const AdminLayout = () => {
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
-              <div className={`px-4 py-2 ${collapsed ? 'hidden' : 'block'}`}>
+              <div className={`px-4 py-2 ${sidebarCollapsed ? 'hidden' : 'block'}`}>
                 <div className="flex items-center space-x-3 mb-6 pt-1">
                   <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700">
                     <User size={20} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium">{currentUser?.username || "Admin"}</h4>
-                    <p className="text-xs text-gray-500">Administrator</p>
+                    <h4 className="text-sm font-medium">{currentUser?.username || "Quản trị viên"}</h4>
+                    <p className="text-xs text-gray-500">Quản trị viên</p>
                   </div>
                 </div>
               </div>
@@ -95,8 +95,8 @@ const AdminLayout = () => {
                     <SidebarMenuButton asChild>
                       <a href="/admin" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium">
                         <Home size={18} />
-                        <span>Dashboard</span>
-                        {collapsed && <ChevronRight className="ml-auto h-4 w-4" />}
+                        <span>Trang chủ</span>
+                        {sidebarCollapsed && <ChevronRight className="ml-auto h-4 w-4" />}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -104,8 +104,8 @@ const AdminLayout = () => {
                     <SidebarMenuButton asChild>
                       <a href="/admin/services" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium">
                         <Tag size={18} />
-                        <span>Services</span>
-                        {collapsed && <ChevronRight className="ml-auto h-4 w-4" />}
+                        <span>Dịch vụ</span>
+                        {sidebarCollapsed && <ChevronRight className="ml-auto h-4 w-4" />}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -113,8 +113,8 @@ const AdminLayout = () => {
                     <SidebarMenuButton asChild>
                       <a href="/admin/specialists" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium">
                         <Users size={18} />
-                        <span>Specialists</span>
-                        {collapsed && <ChevronRight className="ml-auto h-4 w-4" />}
+                        <span>Chuyên gia</span>
+                        {sidebarCollapsed && <ChevronRight className="ml-auto h-4 w-4" />}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -122,8 +122,8 @@ const AdminLayout = () => {
                     <SidebarMenuButton asChild>
                       <a href="/admin/bookings" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium">
                         <Calendar size={18} />
-                        <span>Bookings</span>
-                        {collapsed && <ChevronRight className="ml-auto h-4 w-4" />}
+                        <span>Lịch hẹn</span>
+                        {sidebarCollapsed && <ChevronRight className="ml-auto h-4 w-4" />}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -131,8 +131,8 @@ const AdminLayout = () => {
                     <SidebarMenuButton asChild>
                       <a href="/admin/blogs" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium">
                         <FileText size={18} />
-                        <span>Blog Posts</span>
-                        {collapsed && <ChevronRight className="ml-auto h-4 w-4" />}
+                        <span>Bài viết</span>
+                        {sidebarCollapsed && <ChevronRight className="ml-auto h-4 w-4" />}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -140,8 +140,8 @@ const AdminLayout = () => {
                     <SidebarMenuButton asChild>
                       <a href="/admin/settings" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium">
                         <Settings size={18} />
-                        <span>Settings</span>
-                        {collapsed && <ChevronRight className="ml-auto h-4 w-4" />}
+                        <span>Cài đặt</span>
+                        {sidebarCollapsed && <ChevronRight className="ml-auto h-4 w-4" />}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -157,7 +157,7 @@ const AdminLayout = () => {
                 onClick={handleLogout}
               >
                 <LogOut size={18} />
-                <span className={collapsed ? 'hidden' : 'block'}>Logout</span>
+                <span className={sidebarCollapsed ? 'hidden' : 'block'}>Đăng xuất</span>
               </Button>
             </div>
           </SidebarFooter>
